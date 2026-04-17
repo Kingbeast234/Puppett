@@ -2146,6 +2146,11 @@ button:disabled{background:#2a1a0e;color:#5b4a2a;cursor:default}
 </div>
 
 <script>
+// [PATCHED] Formation Constants
+const ORTHO4 = [{x:0,y:1}, {x:0,y:-1}, {x:1,y:0}, {x:-1,y:0}];
+const DIAG4 = [{x:1,y:1}, {x:1,y:-1}, {x:-1,y:1}, {x:-1,y:-1}];
+const REAR_DIR = { 'North': 'South', 'South': 'North', 'East': 'West', 'West': 'East' };
+
 /* ================================================================
    PUPPET 11.0 — STEP 3: Combat Engine + Board Cleanup + Undo/Redo
    ================================================================
@@ -7150,6 +7155,60 @@ const AI_VAL={Tower:1200,General:110,Giant:90,Horseman:70,Archer:62,
    SUPERHUMAN EVALUATION — 8-component weighted heuristic
    Returns score from `owner`'s perspective (higher = better)
    ================================================================ */
+
+// [PATCHED] Formation Detection Logic
+function detectLinearFormation(units, type, facing) {
+    let chains = []; let currentChain = [];
+    let sorted = [...units].filter(u => u.type === type && u.facing === facing);
+    if (sorted.length < 2) return [];
+    sorted.sort((a,b) => (a.x !== b.x ? a.x - b.x : a.y - b.y));
+    for (let i = 0; i < sorted.length; i++) {
+        if (currentChain.length === 0) { currentChain.push(sorted[i]); continue; }
+        let last = currentChain[currentChain.length - 1];
+        let dist = Math.abs(last.x - sorted[i].x) + Math.abs(last.y - sorted[i].y);
+        if (dist === 1 && (last.x === sorted[i].x || last.y === sorted[i].y)) { currentChain.push(sorted[i]); } 
+        else { if (currentChain.length >= 2) chains.push([...currentChain]); currentChain = [sorted[i]]; }
+    }
+    if (currentChain.length >= 2) chains.push(currentChain); return chains;
+}
+function detectPairedFormation(units, type, facing) {
+    let pairs = []; let relevant = units.filter(u => u.type === type && u.facing === facing);
+    for (let i = 0; i < relevant.length; i++) {
+        for (let j = i + 1; j < relevant.length; j++) {
+            let u1 = relevant[i], u2 = relevant[j];
+            if (Math.abs(u1.x - u2.x) + Math.abs(u1.y - u2.y) === 1) pairs.push([u1, u2]);
+        }
+    } return pairs;
+}
+function detectCoverageWall(units, type, facing) {
+    return detectLinearFormation(units, type, facing).filter(l => l.length >= 3);
+}
+function detectExposure(units) {
+    let exposed = [];
+    units.forEach(u => {
+        let rx = u.x, ry = u.y;
+        if (u.facing === 'North') ry--; else if (u.facing === 'South') ry++;
+        else if (u.facing === 'East') rx--; else if (u.facing === 'West') rx++;
+        if (!units.some(f => f.x === rx && f.y === ry)) exposed.push({unit: u, x: rx, y: ry});
+    }); return exposed;
+}
+function detectEncirclement(myUnits, enemyUnit) {
+    let neighbors = [{x:enemyUnit.x, y:enemyUnit.y+1},{x:enemyUnit.x, y:enemyUnit.y-1},{x:enemyUnit.x+1, y:enemyUnit.y},{x:enemyUnit.x-1, y:enemyUnit.y}];
+    return neighbors.filter(n => myUnits.some(u => u.x === n.x && u.y === n.y)).length;
+}
+function scoreFormationQuality(myUnits, enemyUnits) {
+    let score = 0;
+    ['Swordsman','Raider','Archer'].forEach(type => {
+        ['North','South','East','West'].forEach(facing => {
+            score += detectCoverageWall(myUnits, type, facing).length * 15;
+            score += detectPairedFormation(myUnits, type, facing).length * 5;
+        });
+    });
+    score -= detectExposure(myUnits).length * 10;
+    enemyUnits.forEach(e => { let enc = detectEncirclement(myUnits, e); if(enc>=3) score+=25; if(enc===4) score+=50; });
+    return score;
+}
+
 function aiEvaluateBoard(owner){
   const enemy=1-owner;
   const fwdDir=owner===1?1:-1; // direction AI advances (rows increase toward enemy)
@@ -7284,7 +7343,7 @@ function aiEvaluateBoard(owner){
   const heuristicScore = terrScore+armyScore+mobScore+frmScore+towSafetyScore+advScore+econScore+immedThreat+centerScore;
   /* Blend with neural value (normalised to heuristic scale ~±50000) */
   if (_neuralPolicy) {
-    return (1 - _NEURAL_BLEND) * heuristicScore + _NEURAL_BLEND * (_neuralValue * 50000);
+    return ((1 - _NEURAL_BLEND) * heuristicScore + _NEURAL_BLEND * (_neuralValue * 50000)) + scoreFormationQuality(myUnits, enemyUnits);
   }
   return heuristicScore;
 }
