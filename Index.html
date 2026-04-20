@@ -1181,6 +1181,24 @@ button:disabled{background:#2a1a0e;color:#5b4a2a;cursor:default}
 }
 .d120-svg .d120-fn{pointer-events:none;user-select:none;font-family:monospace}
 .d120-svg #d120-center-p0,.d120-svg #d120-center-p1{pointer-events:none;user-select:none;font-family:monospace}
+
+/* PATCH: Total Immobilization Badge */
+.win-badge-immobilize {
+    display: inline-block;
+    background: #ff0055;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.8em;
+    margin-left: 5px;
+    animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
 </style>
 </head>
 <body>
@@ -1650,6 +1668,50 @@ button:disabled{background:#2a1a0e;color:#5b4a2a;cursor:default}
       <div id="nota" class="nota"></div>
     </div>
 
+    <!-- Notation Import (Local 2P only) -->
+    <div class="panel" id="nota-import-panel" style="display:none">
+      <div class="ptitle" style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+        <span>&#128203; Notation Import</span>
+        <span style="font-size:8.5px;color:#3a6a4a;letter-spacing:.1em;text-transform:uppercase;font-weight:700">LOCAL ONLY</span>
+      </div>
+      <div style="font-size:9px;color:#5a7a5a;line-height:1.55;margin-bottom:7px">
+        Paste or type notation to deploy units and replay moves. Works during your turn.
+      </div>
+      <textarea id="nota-import-input"
+        placeholder="Paste notation here..."
+        style="width:100%;height:80px;padding:5px 7px;border-radius:5px;box-sizing:border-box;
+          border:1px solid var(--skin-settings-border);background:var(--skin-nota-bg);
+          color:#7ecfa0;font-size:9.5px;font-family:monospace;resize:vertical;
+          line-height:1.55;outline:none"></textarea>
+      <div style="display:flex;gap:6px;margin-top:5px;align-items:center">
+        <button id="nota-import-btn" onclick="triggerNotaImport()"
+          style="flex:1;background:#1a3a1a;border:1px solid #3a6a3a;color:#8aca8a;
+          font-size:11px;padding:5px 8px;border-radius:5px;cursor:pointer;font-weight:700;
+          transition:all .15s">&#9654; Import &amp; Play</button>
+        <button onclick="exportCurrentNota()"
+          style="background:#1a1a3a;border:1px solid #3a3a6a;color:#8a8aca;
+          font-size:10px;padding:5px 8px;border-radius:5px;cursor:pointer;
+          transition:all .15s" title="Copy current game notation to clipboard">&#128228; Export</button>
+      </div>
+      <div id="nota-import-status"
+        style="font-size:9px;margin-top:5px;min-height:13px;font-style:italic;color:#5a7a5a;
+        font-family:monospace;letter-spacing:.03em"></div>
+      <div style="margin-top:7px;padding:6px 8px;background:rgba(0,0,0,0.2);border-radius:5px;
+        border:1px solid rgba(100,160,100,0.15)">
+        <div style="font-size:8.5px;color:#4a6a4a;font-weight:700;margin-bottom:4px;letter-spacing:.08em">NOTATION REFERENCE</div>
+        <div style="font-size:8.5px;color:#4a7a4a;font-family:monospace;line-height:1.8">
+          <span style="color:#7ecfa0">B S(4,0)</span> - Deploy Swordsman at col 4, row 0<br>
+          <span style="color:#7ecfa0">S(4,0)-(4,2)</span> - Move unit from to<br>
+          <span style="color:#7ecfa0">T S(4,0)E</span> - Turn unit to face East<br>
+          <span style="color:#7ecfa0">RL M1=8</span> - Roll income: +8 beads<br>
+          <span style="color:#7ecfa0">Sx(5,1)</span> - Attack unit at (5,1)<br>
+          <span style="color:#7ecfa0">// P2 turn</span> - End turn, switch to P2<br>
+          <span style="color:#4a5a4a">Units: M S R A H I G T</span><br>
+          <span style="color:#4a5a4a">P1 rows 0 to 7 | P2 rows 8 to 15</span>
+        </div>
+      </div>
+    </div>
+
     <!-- Chat -->
     <div class="panel">
       <div class="ptitle">Chat / Negotiate</div>
@@ -2109,7 +2171,25 @@ button:disabled{background:#2a1a0e;color:#5b4a2a;cursor:default}
     <p id="vmsg"></p>
     <p id="vscores" style="font-size:11px;color:#8a6a40;margin-bottom:20px"></p>
     <button onclick="showMainMenu()" style="margin-right:6px">Main Menu</button>
-    <button onclick="initGame()">Play Again</button>
+    <button onclick="initGame()" style="margin-right:6px">Play Again</button>
+    <button onclick="replayMatch()" id="replayMatchBtn"
+      style="background:linear-gradient(135deg,#1a3a4a,#0e2030);border:1px solid #2a6a8a;
+      color:#8acce8;font-size:12px;padding:7px 16px;border-radius:6px;cursor:pointer;
+      font-weight:700;letter-spacing:.03em;transition:all .2s"
+      onmouseover="this.style.background='linear-gradient(135deg,#2a5a6a,#1a3a50)'"
+      onmouseout="this.style.background='linear-gradient(135deg,#1a3a4a,#0e2030)'">
+      🔁 Replay Match
+    </button>
+    <div style="margin-top:14px;border-top:1px solid #2a1a0a;padding-top:12px">
+      <button id="victHideBtn" onclick="hideVictoryScreen()"
+        style="background:#1a1008;border:1px solid #3a2010;color:#6a4a20;font-size:10px;
+        padding:6px 18px;border-radius:5px;cursor:pointer;letter-spacing:.04em;
+        transition:all .15s;width:100%"
+        onmouseover="this.style.background='#2a1808';this.style.borderColor='#6a3a18'"
+        onmouseout="this.style.background='#1a1008';this.style.borderColor='#3a2010'">
+        👁 Hide — View Board &amp; Notation &nbsp;·&nbsp; Press <kbd style="background:#0e0804;border:1px solid #3a2010;border-radius:3px;padding:1px 5px;font-size:9px">ESC</kbd> to return
+      </button>
+    </div>
   </div>
 </div>
 
@@ -4756,6 +4836,7 @@ function updSelPanel(){
 /* Main UI refresh */
 function updUI(){
   document.getElementById('phaseLabel').textContent=gs.phase;
+  _updNotaImportPanel();
 
   /* ── PRIVACY WALL ──
      Online:   each player sees their own beads; opponent's are hidden.
@@ -5248,6 +5329,31 @@ function doEndTurn(){
   const prev=1-gs.turn;
   checkElimination(prev,gs.turn);
   if(gs.phase==='gameover') return;
+  /* ── Total Immobilization check ── */
+  /* After the new player's turn begins, see if they have ANY legal action.
+     Deploy: can they roll income OR afford the cheapest unit (60 beads)?
+     Move:   does any of their non-Tower units have a reachable cell or attack target?
+     If both are empty → opponent wins by Total Immobilization.            */
+  (function checkTotalImmob(){
+    if(gs.phase==='gameover') return;
+    const p=gs.players[gs.turn];
+    /* Can they earn/spend on the board this turn? */
+    const canRoll=p.miners>0;          // at least one miner = can roll for income
+    const canBuy=p.beads>=60;          // can afford cheapest unit (Swordsman)
+    let canMove=false;
+    outer:for(let sr=0;sr<ROWS;sr++) for(let sc=0;sc<COLS;sc++){
+      const o=grid[sr][sc].occ;
+      if(!o||o.owner!==gs.turn||o.type==='Tower') continue;
+      if(getReachable(sr,sc).length>0||getAtkTargets(sr,sc).length>0){
+        canMove=true; break outer;
+      }
+    }
+    if(!canRoll&&!canBuy&&!canMove){
+      triggerWin(1-gs.turn,'I!',
+        `P${gs.turn+1} is Totally Immobilized — no deployments or moves available`);
+    }
+  })();
+  if(gs.phase==='gameover') return;
   /* If it's now the AI's turn, take it */
   if(gameMode==='ai'&&gs.turn===1) setTimeout(aiTakeTurn,700);
   else if(gameMode==='auto'){/* aiTakeTurn chains itself */}
@@ -5340,6 +5446,7 @@ function triggerWin(winner,code,reason){
     'E!':'💀 Elimination Victory',
     'T!':'🏛 Domination Victory',
     'N!':'🧠 Negotiation Victory',
+    'I!':'🔒 Total Immobilization',
   };
   document.getElementById('vbadge').textContent=badges[code]||code;
   document.getElementById('vmsg').textContent=reason;
@@ -5357,6 +5464,382 @@ function triggerWin(winner,code,reason){
   addLog(`🏆 P${winner+1} wins — ${reason}`,'sys');
   sfx('victory');
   updUI();
+}
+
+/* ================================================================
+   REPLAY MATCH
+   ================================================================ */
+function replayMatch(){
+  /* Collect notation from #nota (entries are prepended — newest first — so reverse) */
+  const notaEl=document.getElementById('nota');
+  const rawLines=Array.from(notaEl.querySelectorAll('div'))
+    .map(d=>d.textContent.trim()).filter(Boolean);
+  rawLines.reverse(); // oldest first
+  const notaText=rawLines.join('\n');
+
+  /* Show/hide replay button only in local mode */
+  const btn=document.getElementById('replayMatchBtn');
+  if(btn) btn.style.display=(gameMode==='manual')?'':'none';
+
+  /* Re-initialise the game */
+  const prevMode=gameMode;
+  initGame();
+
+  /* If local mode: load the notation into the import textarea and auto-play */
+  if(prevMode==='manual'){
+    setTimeout(()=>{
+      const ta=document.getElementById('nota-import-input');
+      if(ta) ta.value=notaText;
+      if(notaText) importNotation(notaText);
+    },400);
+  }
+}
+
+/* ================================================================
+   NOTATION IMPORT  (Local 2-Player mode only)
+   ================================================================
+   Notation format produced by the game:
+     START
+     B Sym(col,row)      — place/deploy unit
+     T Sym(col,row)F     — turn unit to facing F (N/S/E/W)
+     Sym(fc,fr)-(tc,tr)  — move unit
+     Symx(tc,tr)         — attack at target cell
+     RL M1=8             — roll income (+8 beads)
+     // P1 turn          — P1's turn starts
+     // P2 turn          — P2's turn starts
+     // Deploy phase     — deploy phase begins
+     C! / E! / T! / N!  — game-end codes
+     END
+
+   Unit symbols: M=Miner S=Swordsman R=Raider A=Archer
+                 H=Horseman I=Giant G=General T=Tower
+
+   IMPORTANT: All placement/move calls bypass interactive handlers
+   (handleSetup / handleDeploy) and drive state directly so that
+   units always appear on the board — no validation guards can
+   reject them.
+   ================================================================ */
+const _SYM_TO_UNIT={M:'Miner',S:'Swordsman',R:'Raider',A:'Archer',
+                    H:'Horseman',I:'Giant',G:'General',T:'Tower'};
+function _gToS(col,row){return{sr:(ROWS-1)-row,sc:col};}
+
+let _notaQueue=[];
+let _notaTimer=null;
+let _notaPlaying=false;
+let _notaTotal=0;
+
+function _stopNotaPlayback(){
+  clearTimeout(_notaTimer);
+  _notaPlaying=false;
+  _notaQueue=[];
+}
+
+function _setNotaStatus(msg,playing){
+  const el=document.getElementById('nota-import-status');
+  if(el){el.textContent=msg;el.style.color=playing?'#8aca70':'#d6aa73';}
+  const btn=document.getElementById('nota-import-btn');
+  if(btn) btn.textContent=playing?'⏹ Stop Playback':'▶ Import & Play';
+}
+
+function triggerNotaImport(){
+  if(_notaPlaying){
+    _stopNotaPlayback();
+    addLog('⏹ Notation playback stopped.','sys');
+    _setNotaStatus('Stopped.', false);
+    return;
+  }
+  const ta=document.getElementById('nota-import-input');
+  if(!ta||!ta.value.trim()){_setNotaStatus('No notation to import.', false);return;}
+  importNotation(ta.value);
+}
+
+function importNotation(text){
+  if(gameMode!=='manual'){
+    addLog('⚠ Notation import is only available in Local 2-Player mode.','sys');
+    _setNotaStatus('Local mode only.', false);
+    return;
+  }
+  if(_notaPlaying){_stopNotaPlayback();}
+
+  const rawLines=text.split('\n').map(l=>l.trim()).filter(Boolean);
+  _notaQueue=rawLines.slice();
+  _notaTotal=rawLines.length;
+  _notaPlaying=true;
+  addLog(`▶ Notation import started (${_notaTotal} lines)…`,'sys');
+  _setNotaStatus(`Playing… 0/${_notaTotal}`, true);
+  _playNextNotaLine();
+}
+
+function _playNextNotaLine(){
+  if(!_notaPlaying||_notaQueue.length===0){
+    _notaPlaying=false;
+    addLog('✅ Notation import complete.','sys');
+    _setNotaStatus('Complete ✓', false);
+    return;
+  }
+  const line=_notaQueue.shift();
+  const done=_notaTotal-_notaQueue.length;
+  _setNotaStatus(`Playing… ${done}/${_notaTotal} — ${line}`, true);
+
+  const result=_execNotaLine(line);
+
+  if(result==='end'){
+    _notaPlaying=false;
+    addLog('✅ Notation import complete.','sys');
+    _setNotaStatus('Complete ✓', false);
+    return;
+  }
+  /* Longer pause after turn transitions so UI catches up */
+  const delay=(result==='turn')?700:360;
+  _notaTimer=setTimeout(_playNextNotaLine, delay);
+}
+
+/* ── Direct-state unit placer — bypasses ALL handler validation ──
+   This is the core fix: units are placed unconditionally via
+   placeUnit() + raw state mutations, exactly how the AI engine works.
+   No interactive guards can block these calls.                        */
+function _notaDirectPlace(uType, ownerIdx, col, row){
+  const{sr,sc}=_gToS(col,row);
+  if(grid[sr][sc].occ) return false;          // cell already occupied — skip
+  const facing=DEF_FACE[ownerIdx];
+  const ok=placeUnit(uType,ownerIdx,sr,sc,uType==='Tower'?null:facing);
+  if(!ok) return false;
+  flash(sr,sc,'flash-green');
+  return true;
+}
+
+function _execNotaLine(line){
+  try{
+    /* ── Meta / control ── */
+    if(line==='START') return 'ok';
+    if(line==='END')   return 'end';
+    if(/^(C!|E!|T!|N!)/.test(line)) return 'end';
+
+    /* ── Phase / turn markers ── */
+    if(line==='// Deploy phase') return 'ok';   // auto-handled by checkSetupDone
+    if(line.startsWith('$ ') || line.startsWith('N "')) return 'ok';  // wager/chat — skip
+
+    if(line==='// P1 turn'){
+      /* If we're past startup and it's not P1's turn yet, end P2's turn */
+      if(gs.phase!=='startup'&&gs.turn!==0){
+        doEndTurn();
+        return 'turn';
+      }
+      return 'ok';
+    }
+    if(line==='// P2 turn'){
+      if(gs.phase!=='startup'&&gs.turn!==1){
+        doEndTurn();
+        return 'turn';
+      }
+      return 'ok';
+    }
+
+    /* ── Roll income: RL M1=8 ── */
+    const rlM=line.match(/^RL M\d+=(\d+)$/);
+    if(rlM){
+      if(gs.phase!=='deploy') return 'ok';
+      const r=parseInt(rlM[1]);
+      gs.players[gs.turn].beads+=r;
+      gs.rollsUsedThisDeploy++;
+      addLog(`📜 Roll: P${gs.turn+1} +${r} beads`,gs.turn===0?'p1':'p2');
+      addNota(line);
+      updUI();
+      return 'ok';
+    }
+
+    /* ── BUILD / PLACE: B Sym(col,row) ──────────────────────────────────
+       Handles BOTH startup placement and mid-game deploy.
+       Direct state mutation — no handleSetup / handleDeploy called.     */
+    const bM=line.match(/^B ([MSRAIHGT])\((\d+),(\d+)\)$/);
+    if(bM){
+      const uType=_SYM_TO_UNIT[bM[1]];
+      if(!uType) return 'error';
+      const col=parseInt(bM[2]), row=parseInt(bM[3]);
+
+      /* ── STARTUP phase ── */
+      if(gs.phase==='startup'){
+        /* Infer owner from the starting row they placed on */
+        const ownerIdx=(row===0)?0:(row===15)?1:gs.turn;
+
+        /* If we need to switch to the other player, do it silently */
+        if(gs.turn!==ownerIdx){
+          gs.turn=ownerIdx;
+          updUI();
+        }
+
+        /* Place the unit directly onto the board */
+        if(!_notaDirectPlace(uType, ownerIdx, col, row)) return 'ok';
+
+        /* Update startup tracking state */
+        if(uType==='Tower'){
+          gs.towPlaced[ownerIdx]=true;
+        } else {
+          const idx=gs.startLeft[ownerIdx].indexOf(uType);
+          if(idx!==-1) gs.startLeft[ownerIdx].splice(idx,1);
+        }
+
+        gs.placing=null;
+        const pc=ownerIdx===0?'p1':'p2';
+        addLog(`📜 Placed ${uType} at (${col},${row}) [P${ownerIdx+1}]`,pc);
+        addNota(line);
+        recomputeTerr();
+        showStartupDots();
+
+        /* Auto-transition to deploy phase once both armies are placed */
+        const d0=gs.startLeft[0].length===0&&gs.towPlaced[0];
+        const d1=gs.startLeft[1].length===0&&gs.towPlaced[1];
+        if(d0&&d1){
+          gs.phase='deploy';
+          gs.turn=0;
+          gs.minDeplThisTurn=false;
+          gs.deployedThisTurn=false;
+          gs.rollsUsedThisDeploy=0;
+          clearStartRows();
+          pushUndo();
+          addLog('=== Setup complete. P1 White leads. ===','sys');
+          addNota('// Deploy phase');
+          startTimer();
+          startGameClock();
+        } else if(d0&&!gs.setupDone[0]){
+          /* P1 done, switch to P2 silently */
+          gs.setupDone[0]=true;
+          if(gs.turn===0){ gs.turn=1; }
+          showStartupDots();
+        }
+
+        updUI();
+        return 'ok';
+      }
+
+      /* ── DEPLOY phase ── */
+      if(gs.phase==='deploy'){
+        const p=gs.players[gs.turn];
+        const cost=UNITS[uType].cost;
+
+        /* Give player enough beads if they're short (trusting the notation) */
+        if(p.beads<cost) p.beads=cost;
+
+        /* Ensure reserve has stock */
+        if((p.reserve[uType]||0)<=0) p.reserve[uType]=1;
+
+        /* Place unit directly — bypass zone / bead / guard checks */
+        if(!_notaDirectPlace(uType, gs.turn, col, row)) return 'ok';
+
+        /* Deduct cost and reserve */
+        p.beads-=cost;
+        p.reserve[uType]=Math.max(0,(p.reserve[uType]||0)-1);
+        if(uType==='Miner') gs.minDeplThisTurn=true;
+        gs.deployedThisTurn=true;
+
+        const pc=gs.turn===0?'p1':'p2';
+        addLog(`📜 Deployed ${uType} at (${col},${row}) [P${gs.turn+1}]`,pc);
+        addNota(line);
+        recomputeTerr();
+        updUI();
+        return 'ok';
+      }
+
+      return 'ok'; /* unknown phase — skip */
+    }
+
+    /* ── TURN unit facing: T Sym(col,row)F ─────────────────────────────
+       Directly sets facing + redraws arrow; no selCell guards.          */
+    const tM=line.match(/^T ([MSRAIHGT])\((\d+),(\d+)\)([NSEW])$/);
+    if(tM){
+      const col=parseInt(tM[2]), row=parseInt(tM[3]), facing=tM[4];
+      const{sr,sc}=_gToS(col,row);
+      const o=grid[sr][sc].occ;
+      if(!o) return 'ok';
+
+      /* Advance to move phase if still in deploy so the action is legal */
+      if(gs.phase==='deploy') gs.phase='move';
+
+      pushUndo();
+      o.facing=facing;
+      refreshArrow(sr,sc);
+      o.acted=true;
+      setActedVis(sr,sc,true);
+      addLog(`📜 ${o.type} at (${col},${row}) → ${facing}`,o.owner===0?'p1':'p2');
+      addNota(line);
+      recomputeTerr();
+      updUI();
+      return 'ok';
+    }
+
+    /* ── MOVE unit: Sym(fc,fr)-(tc,tr) ─────────────────────────────────
+       execMove handles SVG repositioning + acted flag + logging.        */
+    const mvM=line.match(/^[MSRAIHGT]\((\d+),(\d+)\)-\((\d+),(\d+)\)$/);
+    if(mvM){
+      const{sr:fSr,sc:fSc}=_gToS(parseInt(mvM[1]),parseInt(mvM[2]));
+      const{sr:tSr,sc:tSc}=_gToS(parseInt(mvM[3]),parseInt(mvM[4]));
+      if(gs.phase==='deploy') gs.phase='move';
+      /* execMove already handles logging, nota, updUI */
+      execMove(fSr,fSc,tSr,tSc);
+      return 'ok';
+    }
+
+    /* ── ATTACK: Symx(tc,tr) ────────────────────────────────────────────
+       Scans the board for a current-player unit with a valid attack on
+       that target, then calls resolveAttack directly.                   */
+    const atM=line.match(/^[MSRAIHGT]x\((\d+),(\d+)\)/);
+    if(atM){
+      const{sr:tSr,sc:tSc}=_gToS(parseInt(atM[1]),parseInt(atM[2]));
+      if(gs.phase==='deploy') gs.phase='move';
+
+      let atSr=-1,atSc=-1;
+      outerAtk:
+      for(let r=0;r<ROWS;r++){
+        for(let c=0;c<COLS;c++){
+          const o=grid[r][c].occ;
+          if(!o||o.owner!==gs.turn||o.acted) continue;
+          const targets=getAtkTargets(r,c);
+          if(targets.some(t=>t.sr===tSr&&t.sc===tSc)){atSr=r;atSc=c;break outerAtk;}
+        }
+      }
+
+      if(atSr>=0){
+        resolveAttack(atSr,atSc,tSr,tSc);
+      }else{
+        addLog(`📜 Attack at (${atM[1]},${atM[2]}) — attacker not found`,'sys');
+      }
+      return 'ok';
+    }
+
+    return 'ok'; /* unknown / unrecognised line — skip silently */
+  }catch(e){
+    console.warn('[NotaImport] error on line:',line,e);
+    return 'error';
+  }
+}
+
+/* Export current game's notation to clipboard */
+function exportCurrentNota(){
+  const notaEl=document.getElementById('nota');
+  const lines=Array.from(notaEl.querySelectorAll('div'))
+    .map(d=>d.textContent.trim()).filter(Boolean);
+  lines.reverse();
+  const text=lines.join('\n');
+  if(!text){addLog('No notation to export yet.','sys');return;}
+  navigator.clipboard.writeText(text).then(()=>{
+    addLog('📋 Notation copied to clipboard.','sys');
+    _setNotaStatus('Copied to clipboard!', false);
+    setTimeout(()=>_setNotaStatus('',false), 2500);
+  }).catch(()=>{
+    /* Fallback: show in textarea */
+    const ta=document.getElementById('nota-import-input');
+    if(ta) ta.value=text;
+    addLog('📋 Notation pasted into import box.','sys');
+  });
+}
+
+/* Show/hide notation import panel based on game mode */
+function _updNotaImportPanel(){
+  const panel=document.getElementById('nota-import-panel');
+  if(panel) panel.style.display=(gameMode==='manual')?'':'none';
+  /* Show/hide replay button based on mode */
+  const rb=document.getElementById('replayMatchBtn');
+  if(rb) rb.style.display=(gameMode==='manual'||gameMode==='ai')?'':'none';
 }
 
 /* ================================================================
@@ -5397,7 +5880,7 @@ function sendChat(){
   inp.value='';
   sfx('btn-click');
   /* In AI mode, AI may react with a line after human sends a message */
-  if(gameMode==='ai'&&gs.turn===0){
+  if(gameMode==='ai'){
     const reactions=[
       'Your words mean nothing on this board.',
       'Interesting strategy. Won\'t save you.',
@@ -5405,6 +5888,9 @@ function sendChat(){
       '...',
       'Focus on your army, not on talking.',
       'Noted.',
+      'Save the talk for after you win.',
+      'I don\'t get distracted.',
+      'Bold words from someone in my territory.',
     ];
     setTimeout(()=>{
       const r=reactions[Math.floor(Math.random()*reactions.length)];
@@ -5613,6 +6099,7 @@ function initGame(){
   }
   deployDotEls=[];
   document.getElementById('vict').classList.remove('show');
+  _victHidden=false;
   document.getElementById('glog').innerHTML='';
   document.getElementById('nota').innerHTML='';
   document.getElementById('clog').innerHTML='';
@@ -10086,6 +10573,12 @@ initRLModel().then(() => {
     const escEl=document.getElementById('esc-overlay');
     if(escEl.classList.contains('show')){escEl.classList.remove('show');return;}
     /* Show exit confirm if mid-game */
+    if(menu.style.display==='none'&&gs.phase==='gameover'&&_victHidden){
+      /* ESC while victory screen is hidden → bring it back */
+      document.getElementById('vict').classList.add('show');
+      _victHidden=false;
+      return;
+    }
     if(menu.style.display==='none'&&gs.phase!=='gameover'){
       escEl.classList.add('show');
     }
@@ -10098,6 +10591,13 @@ function doExitToMenu(){
   clearStartupAbort();
   aiThinking=false;
   showMainMenu();
+}
+
+let _victHidden=false;
+function hideVictoryScreen(){
+  document.getElementById('vict').classList.remove('show');
+  _victHidden=true;
+  sfx('btn-click');
 }
 
 /* Global button click sound — fires on mousedown for any button.
@@ -11294,6 +11794,7 @@ function initRLWorker() {
   _scheduleRLTick();
 }
 </script>
+
 
 
 </body>
