@@ -1,0 +1,1722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pāṇini-Chladni Script · American Alphabet</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=JetBrains+Mono:wght@300;400;600&family=Crimson+Pro:ital,wght@0,300;0,600;1,300&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#05040f;--bg1:#07061a;--bg2:#0a0922;--bg3:#0e0c2c;
+  --bdr:#12112a;--bdr2:#1c1a42;
+  --gold:#c9a84c;--gold2:#e8c96a;--golddim:#3a2800;
+  --purple:#7060c8;--pdim:#18134a;
+  --cyan:#3ac8d8;--cdim:#062830;
+  --rose:#d84870;--rdim:#3a0c1c;
+  --green:#40d890;--gdim:#0c3020;
+  --amber:#ffb840;
+  --text:#9090c0;--textd:#303060;--textb:#d0cff0;
+  --mono:'JetBrains Mono',monospace;
+  --serif:'IM Fell English',Georgia,serif;
+  --body:'Crimson Pro',Georgia,serif;
+}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#201e50;border-radius:2px}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);font-size:12px;display:flex;flex-direction:column}
+
+/* ─── HEADER ─── */
+header{flex-shrink:0;height:48px;background:linear-gradient(135deg,#070620,#0c0830,#070620);border-bottom:1px solid var(--bdr2);display:flex;align-items:center;gap:16px;padding:0 18px}
+.logo{font-family:var(--serif);font-size:16px;color:var(--gold);white-space:nowrap}
+.logo small{font-size:10px;font-family:var(--mono);color:var(--textd);font-style:normal;margin-left:8px}
+.tabs{display:flex;gap:2px;margin-left:auto}
+.tab{background:transparent;border:1px solid transparent;color:var(--textd);padding:5px 14px;cursor:pointer;font-family:var(--mono);font-size:10px;letter-spacing:.8px;text-transform:uppercase;border-radius:4px;transition:all .14s}
+.tab:hover{color:var(--text);background:var(--bg3)}
+.tab.on{background:var(--bg3);border-color:var(--bdr2);color:var(--gold)}
+.badge{font-size:9px;color:var(--textd);border:1px solid var(--bdr);padding:3px 8px;border-radius:3px}
+
+/* ─── APP BODY ─── */
+.app{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.tp{flex:1;overflow:hidden;display:none}
+.tp.on{display:flex}
+
+/* ─── PANEL BASE ─── */
+.pnl{display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--bdr);background:var(--bg1)}
+.pnl:last-child{border-right:none}
+.ph{flex-shrink:0;padding:6px 12px;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:1.1px;color:var(--textd);border-bottom:1px solid var(--bdr);background:var(--bg);display:flex;align-items:center;gap:6px}
+.phbadge{margin-left:auto;font-size:8px;background:var(--bg3);border:1px solid var(--bdr2);padding:1px 6px;border-radius:2px;color:var(--purple)}
+.scroll{flex:1;overflow-y:auto}
+
+/* ─── PHONEME BUTTONS ─── */
+.psec{padding:5px 8px}
+.pstit{font-size:8px;text-transform:uppercase;letter-spacing:1px;color:var(--textd);margin-bottom:3px;margin-top:2px}
+.pgrid{display:flex;flex-wrap:wrap;gap:2px}
+.pb{width:36px;height:36px;border-radius:4px;border:1px solid transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all .12s}
+.pb:hover{transform:scale(1.12);z-index:5;box-shadow:0 0 8px currentColor}
+.pb.on{border-color:currentColor;box-shadow:0 0 10px currentColor}
+.pb .pi{font-family:var(--serif);font-size:14px;line-height:1}
+.pb .pe{font-size:7px;opacity:.5;margin-top:1px}
+.cv{background:#061220;color:#4a9eff;border-color:#0c2040}
+.cd{background:#061220;color:#7ab8ff;border-color:#0c2040}
+.cs{background:#180808;color:#ff6040;border-color:#340e0e}
+.cf{background:#180810;color:#ff40a0;border-color:#340e22}
+.ca{background:#100818;color:#9050ff;border-color:#281545}
+.cn{background:#071510;color:#40ffa0;border-color:#0e3020}
+.cl{background:#160e06;color:#ffb840;border-color:#341e0a}
+.cg{background:#071515;color:#40e8ff;border-color:#0e3030}
+
+/* ─── IPA QUADRILATERAL ─── */
+.ipa-quad-wrap{padding:6px 8px 8px;flex-shrink:0}
+.ipa-quad-tit{font-size:8px;text-transform:uppercase;letter-spacing:.9px;color:var(--textd);margin-bottom:4px}
+
+/* ─── PĀṆINI TABLE ─── */
+.ptbl{margin:4px 8px 8px;border:1px solid var(--bdr);border-radius:4px;overflow:hidden;font-size:8px;flex-shrink:0}
+.pr{display:grid;grid-template-columns:54px repeat(5,1fr);border-bottom:1px solid var(--bdr)}
+.pr:last-child{border-bottom:none}
+.pc{padding:3px 2px;text-align:center;border-right:1px solid var(--bdr)}
+.pc:last-child{border-right:none}
+.pch{background:var(--bg);color:var(--textd);font-size:7.5px;font-weight:600}
+.pcl{background:var(--bg);color:var(--textd);font-size:7.5px;text-align:right;padding-right:4px;display:flex;align-items:center;justify-content:flex-end}
+.pcc{background:var(--bg1);color:#5858a0;cursor:pointer;font-size:11px;font-family:var(--serif);transition:background .12s}
+.pcc:hover{background:var(--bg3);color:var(--textb)}
+
+/* ─── CENTER PANEL (EXPLORE) ─── */
+.cex{flex:1;overflow-y:auto;display:flex;flex-direction:column;align-items:center;padding:14px 12px;gap:10px;background:var(--bg2)}
+.cwrap{flex-shrink:0;border-radius:7px;overflow:hidden;box-shadow:0 0 36px #000b,0 0 0 1px var(--bdr2)}
+
+/* Glyph pipeline */
+.pipeline{width:100%;max-width:460px;background:var(--bg);border:1px solid var(--bdr2);border-radius:6px;padding:10px 12px;flex-shrink:0}
+.pip-tit{font-size:8.5px;text-transform:uppercase;letter-spacing:.9px;color:var(--textd);margin-bottom:8px}
+.pip-steps{display:flex;gap:4px;align-items:flex-start;overflow-x:auto}
+.pip-step{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:3px}
+.pip-label{font-size:7.5px;color:var(--textd);text-align:center;white-space:nowrap}
+.pip-canvas{border-radius:3px;border:1px solid var(--bdr);display:block}
+.pip-arrow{color:var(--textd);font-size:12px;margin-top:28px;flex-shrink:0}
+.glyph-final-wrap{background:var(--bg3);border:1px solid var(--bdr2);border-radius:4px;padding:6px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.glyph-final-label{font-size:7.5px;color:var(--gold);text-transform:uppercase;letter-spacing:.7px}
+
+/* glyph info card */
+.gcard{width:100%;max-width:460px;background:var(--bg);border-radius:6px;padding:10px 13px;border:1px solid var(--bdr2);flex-shrink:0}
+.gipa{font-family:var(--serif);font-size:48px;line-height:1;margin-bottom:3px}
+.gwrd{font-size:10px;color:var(--textd);margin-bottom:8px;font-family:var(--body);font-style:italic}
+.gdets{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+.db{background:var(--bg3);border-radius:3px;padding:5px;text-align:center}
+.dbl{font-size:7.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--textd);margin-bottom:2px}
+.dbv{font-size:11px;color:var(--text);font-weight:600}
+.ctrls{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;flex-shrink:0}
+.cb{background:var(--bg3);border:1px solid var(--bdr2);color:var(--textd);padding:5px 10px;border-radius:4px;cursor:pointer;font-size:10px;font-family:var(--mono);transition:all .12s}
+.cb:hover{background:var(--pdim);color:var(--textb);border-color:var(--purple)}
+.cb.on{background:var(--pdim);color:var(--purple);border-color:var(--purple)}
+
+/* ─── RIGHT WORD ENCODER ─── */
+.irow{flex-shrink:0;padding:6px 8px;display:flex;gap:4px;border-bottom:1px solid var(--bdr)}
+.ti{flex:1;background:var(--bg);border:1px solid var(--bdr2);color:var(--textb);padding:5px 7px;border-radius:4px;font-size:11px;font-family:var(--mono);outline:none}
+.ti:focus{border-color:var(--purple)}
+.gobtn{background:var(--pdim);border:1px solid var(--purple);color:var(--purple);padding:5px 10px;border-radius:4px;cursor:pointer;font-size:10px;font-family:var(--mono);white-space:nowrap;transition:all .12s}
+.gobtn:hover{background:#241880;color:#c0b0ff}
+.sdisp{flex:1;overflow-y:auto;padding:7px}
+.sph{color:var(--textd);font-size:11px;text-align:center;margin-top:28px;line-height:1.9;font-family:var(--body);font-style:italic}
+.sword{margin-bottom:12px}
+.slabel{font-size:8.5px;color:var(--textd);margin-bottom:4px;font-family:var(--body);font-style:italic;word-break:break-all}
+.sglyphs{display:flex;flex-wrap:wrap;gap:2px}
+.mg{position:relative;cursor:pointer;border-radius:3px;border:1px solid var(--bdr);transition:border-color .12s}
+.mg:hover{border-color:var(--purple)}
+.mg canvas{display:block;border-radius:2px}
+.mga{position:absolute;bottom:1px;right:2px;font-size:7px;color:#ffffff55;pointer-events:none;font-family:var(--serif)}
+.seqb{flex-shrink:0;padding:6px 8px;border-top:1px solid var(--bdr)}
+.seqlbl{font-size:8px;color:var(--textd);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.seqp{display:flex;flex-wrap:wrap;gap:2px;min-height:26px;background:var(--bg);border-radius:4px;padding:4px;border:1px solid var(--bdr)}
+.sphn{background:var(--bg3);border-radius:2px;padding:2px 6px;font-size:12px;cursor:pointer;transition:background .12s;font-family:var(--serif)}
+.sphn:hover{background:var(--rdim);text-decoration:line-through}
+.sacts{display:flex;gap:4px;margin-top:4px}
+.sbtn{flex:1;background:var(--bg);border:1px solid var(--bdr);color:var(--textd);padding:4px;border-radius:3px;cursor:pointer;font-size:10px;font-family:var(--mono);transition:all .12s;text-align:center}
+.sbtn:hover{background:var(--bg3);color:var(--textb)}
+.sbtn.pur{background:var(--bg3);border-color:var(--bdr2);color:var(--purple)}
+.sbtn.pur:hover{background:var(--pdim)}
+.spin-wrap{display:flex;align-items:center;justify-content:center;gap:8px;padding:20px;color:var(--textd);font-size:10px}
+.spin{width:13px;height:13px;border:2px solid var(--bdr2);border-top-color:var(--purple);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ─── MODE LAB ─── */
+#t-mode{display:grid;grid-template-columns:1fr 290px 290px}
+.ml-wrap{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:14px}
+.ml-sec{background:var(--bg);border:1px solid var(--bdr);border-radius:5px;padding:10px 12px}
+.ml-stit{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--gold);margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--bdr)}
+.ml-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.ml-lbl{font-size:9px;color:var(--textd);width:84px;flex-shrink:0}
+.ml-val{font-size:11px;color:var(--gold);width:38px;text-align:right;flex-shrink:0}
+input[type=range]{-webkit-appearance:none;flex:1;height:3px;background:var(--bdr2);border-radius:2px;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;background:var(--gold);border-radius:50%;cursor:pointer}
+.ml-sel{background:var(--bg);border:1px solid var(--bdr2);color:var(--textb);padding:3px 7px;border-radius:3px;font-family:var(--mono);font-size:10px;outline:none}
+.ml-inp{background:var(--bg);border:1px solid var(--bdr2);color:var(--textb);padding:3px 7px;border-radius:3px;font-family:var(--mono);font-size:10px;outline:none;width:80px;text-align:right}
+.ml-inp:focus,.ml-sel:focus{border-color:var(--purple)}
+.sym-tog{display:flex;gap:3px}
+.stb{background:var(--bg);border:1px solid var(--bdr);color:var(--textd);padding:3px 9px;border-radius:3px;cursor:pointer;font-size:10px;font-family:var(--mono);transition:all .12s}
+.stb.on{background:var(--pdim);border-color:var(--purple);color:var(--purple)}
+.fdisp{background:var(--bg3);border:1px solid var(--bdr2);border-radius:4px;padding:9px;margin-bottom:8px}
+.fdisp-top{display:flex;align-items:baseline;gap:5px;margin-bottom:3px}
+.fhz{font-size:26px;color:var(--gold);font-weight:600;line-height:1}
+.funit{font-size:10px;color:var(--textd)}
+.fmode{font-size:9px;color:var(--textd)}
+.fbars{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;margin-top:5px}
+.fbar-row{display:flex;gap:4px;align-items:center}
+.fbar-lbl{font-size:7.5px;color:var(--textd);width:56px;flex-shrink:0}
+.fbar-trk{flex:1;height:3px;background:var(--bdr);border-radius:2px;overflow:hidden}
+.fbar-fill{height:100%;border-radius:2px;transition:width .25s}
+.ml-btn{background:var(--bg3);border:1px solid var(--bdr2);color:var(--textd);padding:5px 10px;border-radius:4px;cursor:pointer;font-family:var(--mono);font-size:10px;transition:all .12s;width:100%;text-align:center;margin-top:4px}
+.ml-btn:hover{border-color:var(--purple);color:var(--purple);background:var(--pdim)}
+.ml-btn.gld{border-color:var(--golddim);color:var(--gold)}
+.ml-btn.gld:hover{background:var(--golddim);border-color:var(--gold)}
+.alist{max-height:110px;overflow-y:auto;background:var(--bg);border:1px solid var(--bdr);border-radius:3px;margin-top:5px}
+.ali{display:flex;align-items:center;gap:7px;padding:4px 8px;border-bottom:1px solid var(--bdr);cursor:pointer;transition:background .12s}
+.ali:last-child{border-bottom:none}
+.ali:hover{background:var(--bg3)}
+.ali.on{background:var(--pdim)}
+.ali-ipa{font-family:var(--serif);font-size:13px;width:18px}
+.ali-info{font-size:8.5px;color:var(--textd);flex:1}
+.ali-mode{font-size:8.5px;color:var(--gold)}
+
+/* Math panel */
+.mathpnl{flex:1;overflow-y:auto;padding:10px}
+.eqb{background:var(--bg);border:1px solid var(--bdr);border-radius:4px;padding:9px 11px;margin-bottom:8px}
+.eqtit{font-size:8.5px;text-transform:uppercase;letter-spacing:.8px;color:var(--textd);margin-bottom:5px}
+.eqbody{font-family:var(--body);font-style:italic;font-size:13px;color:var(--textb);line-height:1.7;text-align:center}
+.eqsub{font-size:8.5px;color:var(--textd);margin-top:4px;text-align:center;line-height:1.7;font-family:var(--body);font-style:italic}
+.eqcomp{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;margin-top:7px}
+.eqci{background:var(--bg3);border-radius:3px;padding:5px 6px}
+.eqcl{font-size:7.5px;color:var(--textd);margin-bottom:2px;font-family:var(--mono);font-style:normal}
+.eqcv{font-size:11px;color:var(--cyan);font-weight:600;font-family:var(--mono)}
+.mateq{width:100%;border-collapse:collapse;font-size:8.5px}
+.mateq th{background:var(--bg);color:var(--textd);padding:3px 5px;border:1px solid var(--bdr)}
+.mateq td{padding:3px 5px;border:1px solid var(--bdr);text-align:center;color:var(--text)}
+.pftbl{width:100%;border-collapse:collapse;font-size:8px;margin-top:5px}
+.pftbl th{background:var(--bg);color:var(--textd);padding:2px 4px;border:1px solid var(--bdr);text-align:center}
+.pftbl td{padding:2px 4px;border:1px solid var(--bdr);text-align:center;color:var(--text);cursor:pointer}
+.pftbl td:hover{background:var(--bg3);color:var(--gold)}
+
+/* ─── DOC WRITER ─── */
+#t-doc{display:grid;grid-template-columns:190px 1fr 250px}
+.dph-wrap{flex:1;overflow-y:auto}
+.dph-sec{padding:4px 7px}
+.dpg{display:flex;flex-wrap:wrap;gap:2px}
+.dpb{width:33px;height:33px;border-radius:3px;border:1px solid transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all .12s}
+.dpb:hover{transform:scale(1.1);z-index:5}
+.dpb .dpi{font-family:var(--serif);font-size:13px;line-height:1}
+.dpb .dpe{font-size:7px;opacity:.5}
+.doc-mid{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.doc-tb{flex-shrink:0;padding:5px 9px;border-bottom:1px solid var(--bdr);display:flex;gap:5px;flex-wrap:wrap;align-items:center;background:var(--bg)}
+.dtb{background:var(--bg3);border:1px solid var(--bdr);color:var(--textd);padding:4px 9px;border-radius:3px;cursor:pointer;font-size:9px;font-family:var(--mono);letter-spacing:.4px;transition:all .12s;white-space:nowrap}
+.dtb:hover{border-color:var(--gold);color:var(--gold)}
+.dtb.on{border-color:var(--gold);color:var(--gold);background:var(--golddim)}
+.dot-ctrl{display:flex;gap:3px;align-items:center;margin-left:auto}
+.dot-lbl{font-size:8px;color:var(--textd);white-space:nowrap}
+.dotbtn{width:22px;height:22px;border-radius:3px;background:var(--bg);border:1px solid var(--bdr);cursor:pointer;font-size:9px;display:flex;align-items:center;justify-content:center;transition:all .12s;color:var(--textd)}
+.dotbtn:hover{border-color:var(--gold);color:var(--gold)}
+.dotbtn.on{background:var(--golddim);border-color:var(--gold);color:var(--gold)}
+.doc-tabs{flex-shrink:0;display:flex;gap:2px;padding:4px 9px 0;border-bottom:1px solid var(--bdr);background:var(--bg);overflow-x:auto;min-height:26px}
+.doc-tab{background:var(--bg);border:1px solid var(--bdr);border-bottom:none;color:var(--textd);padding:3px 9px;border-radius:3px 3px 0 0;cursor:pointer;font-size:9px;font-family:var(--mono);white-space:nowrap;display:flex;align-items:center;gap:5px;transition:all .12s}
+.doc-tab.on{background:var(--bg1);border-color:var(--bdr2);color:var(--gold)}
+.dtclose{color:var(--textd);font-size:8px;line-height:1;padding:0 2px}
+.dtclose:hover{color:var(--rose)}
+.dtadd{background:transparent;border:1px dashed var(--bdr);color:var(--textd);padding:3px 8px;border-radius:3px 3px 0 0;cursor:pointer;font-size:9px;font-family:var(--mono);transition:all .12s}
+.dtadd:hover{border-color:var(--gold);color:var(--gold)}
+.doc-page{flex:1;overflow-y:auto;padding:20px 24px;background:var(--bg2)}
+.doc-line{display:flex;flex-wrap:wrap;gap:1px;align-items:flex-end;min-height:72px;padding:4px;border-radius:3px;cursor:default;position:relative;margin-bottom:6px}
+.doc-line.al{background:#0a0920}
+.gcel{position:relative;cursor:pointer;border-radius:3px;border:1px solid transparent;transition:all .12s;display:inline-flex;flex-direction:column;align-items:center;flex-shrink:0}
+.gcel:hover{border-color:var(--purple)}
+.gcel.sel{border-color:var(--gold);background:var(--golddim)}
+.gcel canvas{display:block;border-radius:2px}
+.gcel .gcel-ipa{font-family:var(--serif);font-size:8px;color:var(--textd);text-align:center;line-height:1.1;margin-top:1px}
+.spcel{width:12px;height:66px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--bdr2);font-size:9px;border:1px dashed transparent;border-radius:2px;transition:all .12s;flex-shrink:0}
+.spcel:hover{border-color:var(--bdr);color:var(--textd)}
+.cursor-blk{display:inline-block;width:2px;height:48px;background:var(--gold);animation:blink 1s step-end infinite;border-radius:1px;vertical-align:bottom;margin:0 2px;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.empty-doc{text-align:center;color:var(--textd);margin-top:50px;font-family:var(--body);font-style:italic;font-size:13px;line-height:2}
+.doc-footer{flex-shrink:0;padding:3px 10px;border-top:1px solid var(--bdr);font-size:8.5px;color:var(--textd);background:var(--bg);display:flex;gap:14px}
+.doc-footer span{color:var(--text)}
+
+/* Dot inspector */
+.di-wrap{flex:1;overflow-y:auto;padding:10px}
+.di-sec{margin-bottom:12px}
+.di-tit{font-size:8.5px;text-transform:uppercase;letter-spacing:.8px;color:var(--textd);margin-bottom:5px}
+.di-prev{background:var(--bg);border:1px solid var(--bdr);border-radius:4px;padding:10px;display:flex;align-items:center;justify-content:center;min-height:76px}
+.di-none{font-family:var(--body);font-style:italic;font-size:11px;color:var(--textd);text-align:center}
+.dopts{display:grid;grid-template-columns:repeat(2,1fr);gap:3px}
+.dopt{background:var(--bg);border:1px solid var(--bdr);border-radius:4px;padding:6px;cursor:pointer;transition:all .12s;text-align:center}
+.dopt:hover{border-color:var(--gold);background:var(--golddim)}
+.dopt.on{border-color:var(--gold);background:var(--golddim)}
+.dopt-ic{font-size:13px;margin-bottom:2px;position:relative;display:inline-block}
+.dopt-lbl{font-size:7.5px;color:var(--textd);line-height:1.4}
+.di-info{background:var(--bg);border:1px solid var(--bdr);border-radius:3px;padding:8px;font-size:9px;line-height:1.7;color:var(--text);font-family:var(--body);font-style:italic}
+.ph-srch{width:100%;background:var(--bg);border:1px solid var(--bdr);border-top:none;color:var(--textb);padding:4px 8px;font-family:var(--mono);font-size:10px;outline:none;flex-shrink:0}
+.ph-srch:focus{border-color:var(--purple)}
+.add-btns{flex-shrink:0;padding:5px 7px;border-top:1px solid var(--bdr);display:flex;gap:4px}
+.add-btns .sbtn{flex:1}
+
+/* ─── STATUSBAR ─── */
+.sb{flex-shrink:0;background:var(--bg);border-top:1px solid var(--bdr);padding:3px 16px;display:flex;gap:14px;font-size:8.5px;color:var(--textd)}
+.sb span{color:#484888}
+.sb-right{margin-left:auto;font-size:8px;color:var(--textd);font-family:var(--body);font-style:italic}
+
+/* Audio status indicator */
+.audio-status{position:fixed;bottom:16px;right:16px;background:var(--bg3);border:1px solid var(--bdr2);border-radius:4px;padding:6px 10px;font-size:9px;color:var(--textd);display:flex;align-items:center;gap:6px;z-index:1000}
+.audio-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 1.5s ease-in-out infinite}
+.audio-dot.off{background:var(--rose);animation:none}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Pāṇini-Chladni Script <small>· The American Alphabet</small></div>
+  <div class="tabs">
+    <button class="tab on" onclick="switchTab('explore',this)">⬡ Explore</button>
+    <button class="tab" onclick="switchTab('mode',this)">⟁ Mode Lab</button>
+    <button class="tab" onclick="switchTab('doc',this)">⊞ Doc Writer</button>
+  </div>
+  <div class="badge">44 Phonemes · GA English · v3.1✦Audio</div>
+</header>
+
+<div class="app">
+
+<!-- ═══════════════ TAB 1: EXPLORE ═══════════════ -->
+<div id="t-explore" class="tp on" style="display:flex">
+
+  <!-- LEFT: phoneme grid + IPA quad + Pāṇini -->
+  <div class="pnl" style="width:224px;flex-shrink:0">
+    <div class="ph">Phoneme Explorer <span class="phbadge">44</span></div>
+    <div class="scroll">
+      <div id="phonemeGrid"></div>
+
+      <!-- IPA Quadrilateral Vowel Chart -->
+      <div class="ipa-quad-wrap">
+        <div class="ipa-quad-tit">IPA Vowel Quadrilateral</div>
+        <canvas id="ipaQuad" width="200" height="148" style="border-radius:3px;display:block"></canvas>
+      </div>
+
+      <!-- Pāṇini Table -->
+      <div class="ptbl" id="paniniTbl"></div>
+    </div>
+  </div>
+
+  <!-- CENTER: Chladni + Pipeline -->
+  <div class="pnl cex" id="cex">
+    <div class="cwrap"><canvas id="gc" width="248" height="248"></canvas></div>
+
+    <!-- Glyph Pipeline -->
+    <div class="pipeline">
+      <div class="pip-tit">Glyph Extraction Pipeline — 1 Sound → 1 Shape</div>
+      <div class="pip-steps" id="pipSteps">
+        <div class="pip-step">
+          <canvas class="pip-canvas" id="pip-0" width="76" height="76"></canvas>
+          <div class="pip-label">① Raw<br>Chladni</div>
+        </div>
+        <div class="pip-arrow">→</div>
+        <div class="pip-step">
+          <canvas class="pip-canvas" id="pip-1" width="76" height="76"></canvas>
+          <div class="pip-label">② Threshold<br>Binary</div>
+        </div>
+        <div class="pip-arrow">→</div>
+        <div class="pip-step">
+          <canvas class="pip-canvas" id="pip-2" width="76" height="76"></canvas>
+          <div class="pip-label">③ Skeleton<br>Zhang-Suen</div>
+        </div>
+        <div class="pip-arrow">→</div>
+        <div class="pip-step">
+          <canvas class="pip-canvas" id="pip-3" width="76" height="76"></canvas>
+          <div class="pip-label">④ Pruned<br>Clean</div>
+        </div>
+        <div class="pip-arrow">→</div>
+        <div class="pip-step">
+          <div class="glyph-final-wrap">
+            <canvas class="pip-canvas" id="pip-4" width="76" height="76" style="border-color:var(--gold)"></canvas>
+            <div class="glyph-final-label">⑤ Final Glyph</div>
+          </div>
+          <div class="pip-label">Vectorized<br>Smooth</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info card -->
+    <div class="gcard">
+      <div class="gipa" id="gipa">—</div>
+      <div class="gwrd" id="gwrd">Select a phoneme to view its acoustic glyph</div>
+      <div class="gdets" id="gdets"></div>
+    </div>
+    <div class="ctrls">
+      <button class="cb" id="btnPlay" onclick="playTone()">▶ Phoneme</button>
+      <button class="cb" id="btnAnim" onclick="toggleAnim()">✦ Animate</button>
+      <button class="cb" id="btnFlip" onclick="flipSym()">⟷ Flip</button>
+      <button class="cb" onclick="addToSeq()">＋ Word</button>
+      <button class="cb" onclick="addToDoc()">⊞ Doc</button>
+    </div>
+  </div>
+
+  <!-- RIGHT: word encoder -->
+  <div class="pnl" style="width:272px;flex-shrink:0">
+    <div class="ph">Word Encoder</div>
+    <div class="irow">
+      <input class="ti" id="ti" type="text" placeholder="Type English text…"
+        onkeydown="if(event.key==='Enter')phonemize()">
+      <button class="gobtn" onclick="phonemize()">Go ✦</button>
+    </div>
+    <div class="sdisp" id="sd">
+      <div class="sph">Enter English text above to render words as Chladni glyphs.<br><br>Or build a word manually below.</div>
+    </div>
+    <div class="seqb">
+      <div class="seqlbl">Manual sequence — click to remove</div>
+      <div class="seqp" id="seqp"></div>
+      <div class="sacts">
+        <button class="sbtn" onclick="clearSeq()">✕ Clear</button>
+        <button class="sbtn pur" onclick="renderSeq()">⊞ Render</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ TAB 2: MODE LAB ═══════════════ -->
+<div id="t-mode" class="tp">
+
+  <!-- Controls -->
+  <div class="pnl" style="overflow:hidden">
+    <div class="ph">Custom Mode Editor</div>
+    <div class="ml-wrap">
+      <div class="ml-sec">
+        <div class="ml-stit">Mode Parameters</div>
+        <div class="ml-row"><span class="ml-lbl">m (nodal rows)</span>
+          <input type="range" id="sl-m" min="1" max="10" value="2" oninput="mlUpdate()">
+          <span class="ml-val" id="v-m">2</span></div>
+        <div class="ml-row"><span class="ml-lbl">n (nodal cols)</span>
+          <input type="range" id="sl-n" min="1" max="10" value="3" oninput="mlUpdate()">
+          <span class="ml-val" id="v-n">3</span></div>
+        <div class="ml-row"><span class="ml-lbl">Symmetry</span>
+          <div class="sym-tog">
+            <button class="stb on" id="sym-s" onclick="setSym(1)">Sym</button>
+            <button class="stb" id="sym-a" onclick="setSym(0)">Antisym</button>
+          </div></div>
+        <div class="ml-row"><span class="ml-lbl">Nodal lines</span>
+          <span id="v-nd" style="font-size:12px;color:var(--gold)">3</span></div>
+      </div>
+      <div class="ml-sec">
+        <div class="ml-stit">Plate Parameters</div>
+        <div class="ml-row"><span class="ml-lbl">Material</span>
+          <select class="ml-sel" id="ml-mat" onchange="mlUpdate()">
+            <option value="al">Al 6061</option>
+            <option value="ss">SS 304</option>
+            <option value="cu">Copper</option>
+          </select></div>
+        <div class="ml-row"><span class="ml-lbl">Side L (mm)</span>
+          <input type="range" id="sl-L" min="100" max="600" value="300" oninput="mlUpdate()">
+          <span class="ml-val" id="v-L">300</span></div>
+        <div class="ml-row"><span class="ml-lbl">Thickness h (mm)</span>
+          <input type="range" id="sl-h" min="3" max="30" value="8" oninput="mlUpdate()">
+          <span class="ml-val" id="v-h">0.8</span></div>
+        <div class="fdisp">
+          <div class="fdisp-top"><span class="fhz" id="fd-hz">—</span><span class="funit">Hz</span>
+            <span class="fmode" id="fd-mode"></span></div>
+          <div style="font-size:7.5px;color:var(--textd);margin-bottom:5px">Computed resonant frequency</div>
+          <div class="fbars">
+            <div class="fbar-row"><span class="fbar-lbl">vs vocal F0</span>
+              <div class="fbar-trk"><div class="fbar-fill" id="fb-v" style="background:var(--cyan)"></div></div></div>
+            <div class="fbar-row"><span class="fbar-lbl">vs formants</span>
+              <div class="fbar-trk"><div class="fbar-fill" id="fb-f" style="background:var(--purple)"></div></div></div>
+          </div>
+        </div>
+        <div class="ml-row"><span class="ml-lbl">Override Hz</span>
+          <input class="ml-inp" id="ml-hz" type="number" placeholder="auto" oninput="mlUpdate()"></div>
+      </div>
+      <div class="ml-sec">
+        <div class="ml-stit">Assign to Phoneme</div>
+        <div class="alist" id="alist"></div>
+        <button class="ml-btn gld" onclick="assignMode()">⊙ Assign Mode to Selected</button>
+        <button class="ml-btn" onclick="mlAnim()">✦ Animate This Mode</button>
+        <button class="ml-btn" onclick="mlToDoc()">⊞ Add to Doc</button>
+      </div>
+      <div class="ml-sec">
+        <div class="ml-stit">Pāṇini Frequency Grid</div>
+        <div style="font-size:8px;color:var(--textd);margin-bottom:5px;line-height:1.6">
+          F<sub>ij</sub> = 150 + i·40 + j·25 Hz &nbsp;(consonants)<br>Click cell to set Override Hz.
+        </div>
+        <div id="ml-pgrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ML Preview -->
+  <div class="pnl" style="display:flex;flex-direction:column;align-items:center;padding:14px 10px;gap:10px;overflow-y:auto;background:var(--bg2)">
+    <div class="ph" style="width:100%;align-self:stretch;border-radius:4px 4px 0 0">Mode Preview</div>
+    <div class="cwrap"><canvas id="ml-gc" width="264" height="264"></canvas></div>
+    <div style="background:var(--bg3);border:1px solid var(--bdr2);border-radius:4px;padding:9px;width:100%;max-width:290px">
+      <div style="font-size:8px;color:var(--textd);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px">Mode Identity</div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:3px" id="ml-id"></div>
+    </div>
+    <!-- Pipeline preview in mode lab -->
+    <div class="pipeline" style="max-width:290px">
+      <div class="pip-tit">Glyph from This Mode</div>
+      <div style="display:flex;gap:5px;align-items:center;justify-content:center;flex-wrap:wrap">
+        <div class="pip-step"><canvas id="ml-pip-3" width="72" height="72" class="pip-canvas"></canvas><div class="pip-label">Skeleton</div></div>
+        <div class="pip-arrow">→</div>
+        <div class="pip-step"><div class="glyph-final-wrap"><canvas id="ml-pip-4" width="72" height="72" class="pip-canvas" style="border-color:var(--gold)"></canvas><div class="glyph-final-label">Final Glyph</div></div><div class="pip-label">Smoothed</div></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:5px">
+      <button class="cb" onclick="mlPlayTone()">▶ Phoneme</button>
+      <button class="cb" onclick="mlAnim()">✦ Animate</button>
+    </div>
+  </div>
+
+  <!-- Math -->
+  <div class="pnl" style="width:290px;flex-shrink:0">
+    <div class="ph">Physics & Mathematics</div>
+    <div class="mathpnl">
+      <div class="eqb"><div class="eqtit">Biharmonic Plate Equation</div>
+        <div class="eqbody">∇⁴W = (ρh / D) · ω² W</div>
+        <div class="eqsub">W = displacement · ω = 2πf · ρ = density<br>h = thickness · D = flexural rigidity</div></div>
+      <div class="eqb"><div class="eqtit">Flexural Rigidity</div>
+        <div class="eqbody">D = Eh³ / [12(1 − ν²)]</div>
+        <div class="eqsub">E = Young's modulus · ν = Poisson ratio</div>
+        <div class="eqcomp" id="eq-D"></div></div>
+      <div class="eqb"><div class="eqtit">Natural Frequency (Free Square Plate)</div>
+        <div class="eqbody">f<sub>mn</sub> ≈ (π / 2L²)(m² + n²)√(D / ρh)</div>
+        <div class="eqsub">m, n = mode numbers · L = side length</div>
+        <div class="eqcomp" id="eq-f"></div></div>
+      <div class="eqb"><div class="eqtit">Pāṇini Frequency Assignment</div>
+        <div class="eqbody">F<sub>ij</sub> = F₀ + i·Δ<sub>row</sub> + j·Δ<sub>col</sub></div>
+        <div class="eqsub">
+          i = place of articulation (0 Velar → 4 Labial)<br>
+          j = manner of articulation (0 vl.stop → 5 nasal)<br>
+          Consonants: F₀=150 Hz, Δ<sub>r</sub>=40, Δ<sub>c</sub>=25<br>
+          Vowels: F₀=700 Hz, Δ=80–120 Hz per step
+        </div>
+        <div class="eqcomp" id="eq-p"></div></div>
+      <div class="eqb"><div class="eqtit">Nodal Line Count</div>
+        <div class="eqbody" style="font-size:12px">N<sub>nodes</sub> = (m − 1) + (n − 1)</div>
+        <div class="eqsub">Current: <span id="eq-nc" style="color:var(--gold)">—</span> lines · Complexity ∝ N</div></div>
+      <div class="eqb"><div class="eqtit">Material Properties</div>
+        <table class="mateq">
+          <tr><th>Material</th><th>E (GPa)</th><th>ρ (kg/m³)</th><th>ν</th></tr>
+          <tr><td>Al 6061</td><td>68.9</td><td>2700</td><td>0.33</td></tr>
+          <tr><td>SS 304</td><td>193</td><td>8000</td><td>0.29</td></tr>
+          <tr><td>Copper</td><td>110</td><td>8960</td><td>0.34</td></tr>
+        </table></div>
+      <div class="eqb"><div class="eqtit">Glyph Pipeline Steps</div>
+        <div class="eqsub" style="text-align:left;line-height:1.9">
+          <b style="color:var(--textb)">① Threshold</b> — binary mask, nodal pixels = black<br>
+          <b style="color:var(--textb)">② Zhang-Suen</b> — iterative morphological thinning<br>
+          <b style="color:var(--textb)">③ Prune</b> — remove branches &lt; minLen pixels<br>
+          <b style="color:var(--textb)">④ Trace</b> — order pixels into polylines (DFS)<br>
+          <b style="color:var(--textb)">⑤ Smooth</b> — Chaikin corner-cutting (3 passes)
+        </div></div>
+      <div class="eqb"><div class="eqtit">Vocal Frequency Ranges</div>
+        <div class="eqsub" style="text-align:left;line-height:1.9">
+          Male F0: 85–180 Hz · Female F0: 160–255 Hz<br>
+          Singing: 80–1100 Hz<br>
+          Formant F1: 300–1000 Hz · F2: 800–2800 Hz<br>
+          Fricatives: 2000–10 000 Hz
+        </div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ TAB 3: DOC WRITER ═══════════════ -->
+<div id="t-doc" class="tp">
+
+  <!-- Left: phoneme picker -->
+  <div class="pnl" style="width:190px;flex-shrink:0">
+    <div class="ph">Insert Phoneme</div>
+    <input class="ph-srch" id="phSrch" type="text" placeholder="Search IPA / word…" oninput="filterPh()">
+    <div class="dph-wrap"><div id="docPhGrid"></div></div>
+    <div class="add-btns">
+      <button class="sbtn pur" onclick="docSpace()">⎵ Space</button>
+      <button class="sbtn" onclick="docNewLine()">↵ Line</button>
+    </div>
+  </div>
+
+  <!-- Center: document canvas -->
+  <div class="doc-mid">
+    <div class="doc-tb">
+      <button class="dtb" onclick="docClear()">✕ Clear</button>
+      <button class="dtb" onclick="docDel()">⌫ Delete</button>
+      <button class="dtb on" id="btn-ipa" onclick="toggleIpa()">IPA Labels</button>
+      <button class="dtb" onclick="docPlayAll()">▶ Read Aloud</button>
+      <button class="dtb" onclick="docExport()">↓ Export</button>
+      <div class="dot-ctrl">
+        <span class="dot-lbl">Dot:</span>
+        <button class="dotbtn on" id="db-0" onclick="setDot(0)" title="None">∅</button>
+        <button class="dotbtn" id="db-1" onclick="setDot(1)" title="Above — tense/Germanic">·̈</button>
+        <button class="dotbtn" id="db-2" onclick="setDot(2)" title="Below — r-color">ḍ</button>
+        <button class="dotbtn" id="db-4" onclick="setDot(4)" title="Inside — diphthong">◦</button>
+        <button class="dotbtn" id="db-3" onclick="setDot(3)" title="Above + Below">⁚</button>
+      </div>
+    </div>
+    <div class="doc-tabs" id="docTabs"></div>
+    <div class="doc-page" id="docPage">
+      <div id="emptyDoc" class="empty-doc">Click phonemes on the left to begin writing.<br>
+        Each glyph is the physical vibration pattern of its sound.<br>
+        <span style="font-size:10px;color:var(--bdr2)">← Select a phoneme to start</span></div>
+      <div id="docLines"></div>
+    </div>
+    <div class="doc-footer">
+      <div>Doc <span id="dc-pg">1</span></div>
+      <div>Glyphs: <span id="dc-gl">0</span></div>
+      <div>Words: <span id="dc-wd">0</span></div>
+    </div>
+  </div>
+
+  <!-- Right: dot inspector -->
+  <div class="pnl" style="width:250px;flex-shrink:0">
+    <div class="ph">Nodal Dot Inspector</div>
+    <div class="di-wrap">
+      <div class="di-sec">
+        <div class="di-tit">Selected Glyph</div>
+        <div class="di-prev" id="di-prev"><span class="di-none">No glyph selected</span></div>
+      </div>
+      <div class="di-sec">
+        <div class="di-tit">Apply Nodal Dot</div>
+        <div class="dopts">
+          <div class="dopt on" id="dopt-0" onclick="applyDot(0)">
+            <div class="dopt-ic">○</div>
+            <div class="dopt-lbl"><b>None</b> — default</div>
+          </div>
+          <div class="dopt" id="dopt-1" onclick="applyDot(1)">
+            <div class="dopt-ic" style="font-size:10px">○<sup style="color:var(--gold);font-size:8px">●</sup></div>
+            <div class="dopt-lbl"><b>Above</b><br>tense / Germanic</div>
+          </div>
+          <div class="dopt" id="dopt-2" onclick="applyDot(2)">
+            <div class="dopt-ic" style="font-size:10px">○<sub style="color:var(--gold);font-size:8px">●</sub></div>
+            <div class="dopt-lbl"><b>Below</b><br>r-coloring</div>
+          </div>
+          <div class="dopt" id="dopt-4" onclick="applyDot(4)">
+            <div class="dopt-ic">◦</div>
+            <div class="dopt-lbl"><b>Inside loop</b><br>diphthong glide</div>
+          </div>
+          <div class="dopt" id="dopt-3" onclick="applyDot(3)">
+            <div class="dopt-ic" style="font-size:10px">○<sup style="color:var(--gold);font-size:7px">●</sup><sub style="color:var(--gold);font-size:7px">●</sub></div>
+            <div class="dopt-lbl"><b>Above + Below</b><br>rare / technical</div>
+          </div>
+        </div>
+      </div>
+      <div class="di-sec">
+        <div class="di-tit">Dot Semantics</div>
+        <div class="di-info">
+          <b style="color:var(--textb)">No dot</b> — Citation form; most frequent spelling.<br><br>
+          <b style="color:var(--textb)">Dot above</b> — Tenseness or Germanic-origin distinction (beat/bit, pool/pull).<br><br>
+          <b style="color:var(--textb)">Dot below</b> — Rhotic / r-colored quality (bird, butter, father).<br><br>
+          <b style="color:var(--textb)">Dot inside</b> — Diphthong glide; secondary movement in complex vowel nuclei.<br><br>
+          <b style="color:var(--textb)">Above + Below</b> — Reserved for homophones or legal/technical contexts. Maximum 2 dots per glyph.
+        </div>
+      </div>
+      <div class="di-sec">
+        <div class="di-tit">Phoneme Detail</div>
+        <div id="di-det" class="di-info" style="color:var(--textd);font-style:italic">Select a glyph.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end .app -->
+
+<div class="sb">
+  <div>Mode <span id="sb-mode">—</span></div>
+  <div>Hz <span id="sb-hz">—</span></div>
+  <div>Place <span id="sb-place">—</span></div>
+  <div>Manner <span id="sb-man">—</span></div>
+  <div>Nodes <span id="sb-nd">—</span></div>
+  <div class="sb-right">Pāṇini-Chladni Script · 1 phoneme → 1 frequency → 1 eigenmode → 1 glyph · zero exceptions</div>
+</div>
+
+<!-- Audio Status Indicator -->
+<div class="audio-status" id="audioStatus">
+  <div class="audio-dot" id="audioDot"></div>
+  <span id="audioText">Audio ready</span>
+</div>
+
+<script>
+// ════════════════════════════════════════════════
+// PHONEME DATA — 44 GA English phonemes
+// ════════════════════════════════════════════════
+const P=[
+  {id:'IY',ipa:'iː',word:'b·eat',   cat:'vowel', place:'high front',      manner:'close',      m:3,n:3,sym:1,freq:2090,qx:.72,qy:.08},
+  {id:'IH',ipa:'ɪ', word:'b·it',   cat:'vowel', place:'near-high front',  manner:'near-close', m:2,n:2,sym:1,freq:1800,qx:.62,qy:.18},
+  {id:'EY',ipa:'eɪ',word:'d·ay',   cat:'diphth',place:'mid front',        manner:'diphthong',  m:3,n:4,sym:1,freq:1600,qx:.58,qy:.30},
+  {id:'EH',ipa:'ɛ', word:'b·ed',   cat:'vowel', place:'low-mid front',    manner:'open-mid',   m:1,n:3,sym:1,freq:1400,qx:.52,qy:.45},
+  {id:'AE',ipa:'æ', word:'c·at',   cat:'vowel', place:'near-low front',   manner:'near-open',  m:1,n:2,sym:0,freq:1200,qx:.44,qy:.62},
+  {id:'AA',ipa:'ɑː',word:'f·ather',cat:'vowel', place:'low back',         manner:'open',       m:1,n:2,sym:1,freq:800, qx:.22,qy:.78},
+  {id:'AO',ipa:'ɔː',word:'l·aw',   cat:'vowel', place:'low-mid back',     manner:'open-mid',   m:2,n:3,sym:0,freq:900, qx:.18,qy:.55},
+  {id:'OW',ipa:'oʊ',word:'g·o',    cat:'diphth',place:'mid back',         manner:'diphthong',  m:3,n:4,sym:0,freq:1050,qx:.14,qy:.38},
+  {id:'UH',ipa:'ʊ', word:'b·ook',  cat:'vowel', place:'near-high back',   manner:'near-close', m:1,n:4,sym:1,freq:1300,qx:.10,qy:.22},
+  {id:'UW',ipa:'uː',word:'b·oot',  cat:'vowel', place:'high back',        manner:'close',      m:1,n:4,sym:0,freq:1100,qx:.06,qy:.10},
+  {id:'AH',ipa:'ʌ', word:'b·ut',   cat:'vowel', place:'central',          manner:'open-mid',   m:2,n:3,sym:1,freq:1450,qx:.40,qy:.48},
+  {id:'SC',ipa:'ə', word:'a·bout', cat:'vowel', place:'central mid',       manner:'mid',        m:4,n:4,sym:1,freq:1350,qx:.38,qy:.34},
+  {id:'ER',ipa:'ɚ', word:'b·ird',  cat:'vowel', place:'central r-color',  manner:'r-colored',  m:1,n:3,sym:0,freq:1500,qx:.34,qy:.40},
+  {id:'AY',ipa:'aɪ',word:'·ice',   cat:'diphth',place:'low→high front',   manner:'diphthong',  m:2,n:4,sym:0,freq:1700},
+  {id:'AW',ipa:'aʊ',word:'·owl',   cat:'diphth',place:'low→back',         manner:'diphthong',  m:2,n:4,sym:1,freq:1750},
+  {id:'OY',ipa:'ɔɪ',word:'b·oy',   cat:'diphth',place:'back→front',       manner:'diphthong',  m:4,n:5,sym:1,freq:1850},
+  {id:'P', ipa:'p', word:'·pat',   cat:'stop',  place:'bilabial',         manner:'voiceless stop', m:1,n:5,sym:1,freq:null,pc:[0,0]},
+  {id:'B', ipa:'b', word:'·bat',   cat:'stop',  place:'bilabial',         manner:'voiced stop',    m:1,n:5,sym:0,freq:null,pc:[1,0]},
+  {id:'T', ipa:'t', word:'·tap',   cat:'stop',  place:'alveolar',         manner:'voiceless stop', m:2,n:5,sym:1,freq:null,pc:[0,2]},
+  {id:'D', ipa:'d', word:'·dip',   cat:'stop',  place:'alveolar',         manner:'voiced stop',    m:2,n:5,sym:0,freq:null,pc:[1,2]},
+  {id:'K', ipa:'k', word:'·cat',   cat:'stop',  place:'velar',            manner:'voiceless stop', m:3,n:5,sym:1,freq:null,pc:[0,4]},
+  {id:'G', ipa:'ɡ', word:'·get',   cat:'stop',  place:'velar',            manner:'voiced stop',    m:3,n:5,sym:0,freq:null,pc:[1,4]},
+  {id:'F', ipa:'f', word:'·fat',   cat:'fric',  place:'labiodental',      manner:'voiceless fric', m:1,n:6,sym:1,freq:7000,pc:[2,1]},
+  {id:'V', ipa:'v', word:'·vat',   cat:'fric',  place:'labiodental',      manner:'voiced fric',    m:1,n:6,sym:0,freq:6500,pc:[3,1]},
+  {id:'TH',ipa:'θ', word:'·thin',  cat:'fric',  place:'dental',           manner:'voiceless fric', m:2,n:6,sym:1,freq:7500,pc:[2,2]},
+  {id:'DH',ipa:'ð', word:'·this',  cat:'fric',  place:'dental',           manner:'voiced fric',    m:2,n:6,sym:0,freq:7000,pc:[3,2]},
+  {id:'S', ipa:'s', word:'·sat',   cat:'fric',  place:'alveolar',         manner:'voiceless fric', m:3,n:6,sym:1,freq:8000,pc:[2,2]},
+  {id:'Z', ipa:'z', word:'·zap',   cat:'fric',  place:'alveolar',         manner:'voiced fric',    m:3,n:6,sym:0,freq:7500,pc:[3,2]},
+  {id:'SH',ipa:'ʃ', word:'·shoe',  cat:'fric',  place:'postalveolar',     manner:'voiceless fric', m:4,n:6,sym:1,freq:4000,pc:[2,3]},
+  {id:'ZH',ipa:'ʒ', word:'measure',cat:'fric',  place:'postalveolar',     manner:'voiced fric',    m:4,n:6,sym:0,freq:3500,pc:[3,3]},
+  {id:'H', ipa:'h', word:'·hat',   cat:'fric',  place:'glottal',          manner:'voiceless fric', m:5,n:7,sym:1,freq:1500,pc:[2,4]},
+  {id:'CH',ipa:'tʃ',word:'·chair', cat:'affr',  place:'postalveolar',     manner:'voiceless affr', m:5,n:5,sym:1,freq:3800,pc:[4,3]},
+  {id:'JH',ipa:'dʒ',word:'·judge', cat:'affr',  place:'postalveolar',     manner:'voiced affr',    m:5,n:6,sym:0,freq:3200,pc:[5,3]},
+  {id:'M', ipa:'m', word:'·mat',   cat:'nasal', place:'bilabial',         manner:'nasal',          m:1,n:7,sym:1,freq:250, pc:[6,0]},
+  {id:'N', ipa:'n', word:'·nat',   cat:'nasal', place:'alveolar',         manner:'nasal',          m:1,n:7,sym:0,freq:270, pc:[6,2]},
+  {id:'NG',ipa:'ŋ', word:'ri·ng',  cat:'nasal', place:'velar',            manner:'nasal',          m:2,n:7,sym:1,freq:290, pc:[6,4]},
+  {id:'L', ipa:'l', word:'·let',   cat:'liquid',place:'alveolar',         manner:'lateral',        m:2,n:7,sym:0,freq:400, pc:[7,2]},
+  {id:'R', ipa:'r', word:'·rat',   cat:'liquid',place:'alveolar',         manner:'rhotic',         m:3,n:7,sym:1,freq:420, pc:[8,2]},
+  {id:'W', ipa:'w', word:'·wet',   cat:'glide', place:'bilabial-velar',   manner:'glide',          m:3,n:7,sym:0,freq:350, pc:[9,0]},
+  {id:'Y', ipa:'j', word:'·yet',   cat:'glide', place:'palatal',          manner:'glide',          m:4,n:7,sym:1,freq:380, pc:[9,3]},
+];
+const byId={};P.forEach(p=>byId[p.id]=p);
+const CAT_CLS={vowel:'cv',diphth:'cd',stop:'cs',fric:'cf',affr:'ca',nasal:'cn',liquid:'cl',glide:'cg'};
+const CAT_LBL={vowel:'Vowels',diphth:'Diphthongs',stop:'Stops',fric:'Fricatives',affr:'Affricates',nasal:'Nasals',liquid:'Liquids',glide:'Glides'};
+const CAT_COL={vowel:'#4a9eff',diphth:'#7ab8ff',stop:'#ff6040',fric:'#ff40a0',affr:'#9050ff',nasal:'#40ffa0',liquid:'#ffb840',glide:'#40e8ff'};
+
+// ════════════════════════════════════════════════
+// CHLADNI MATH
+// ════════════════════════════════════════════════
+function Z(x,y,m,n,sym){
+  const a=Math.cos(m*Math.PI*x)*Math.cos(n*Math.PI*y);
+  const b=Math.cos(n*Math.PI*x)*Math.cos(m*Math.PI*y);
+  return sym?a+b:a-b;
+}
+function L(a,b,t){return a+(b-a)*t}
+function getZMax(m,n,sym,steps){
+  let z=0.001;
+  for(let i=0;i<=steps;i++)for(let j=0;j<=steps;j++){const v=Math.abs(Z(i/steps,j/steps,m,n,sym));if(v>z)z=v;}
+  return z;
+}
+function drawChladni(canvas,m,n,sym){
+  const ctx=canvas.getContext('2d'),S=canvas.width;
+  const img=ctx.createImageData(S,S),d=img.data;
+  const zMax=getZMax(m,n,sym,20);
+  for(let py=0;py<S;py++)for(let px=0;px<S;px++){
+    const z=Z(px/S,py/S,m,n,sym),t=z/zMax,a=Math.abs(t),thr=.055,gw=.18;
+    let r,g,b;
+    if(a<thr){const f=Math.pow(1-a/thr,.55);r=L(100,215,f)|0;g=L(65,175,f)|0;b=L(8,40,f)|0;}
+    else if(a<thr+gw){const f=Math.pow(1-(a-thr)/gw,2);r=t>0?L(5,40,f*.4)|0:L(14,52,f*.4)|0;g=t>0?L(10,30,f*.3)|0:L(5,20,f*.25)|0;b=t>0?22:4;}
+    else{r=t>0?5:13;g=t>0?10:5;b=t>0?21:4;}
+    const i=(py*S+px)*4;d[i]=r;d[i+1]=g;d[i+2]=b;d[i+3]=255;
+  }
+  ctx.putImageData(img,0,0);
+}
+function drawMini(canvas,m,n,sym,dots){
+  const ctx=canvas.getContext('2d'),S=canvas.width;
+  const img=ctx.createImageData(S,S),d=img.data;
+  const zMax=getZMax(m,n,sym,10),thr=.07;
+  for(let py=0;py<S;py++)for(let px=0;px<S;px++){
+    const z=Z(px/S,py/S,m,n,sym),a=Math.abs(z)/zMax;
+    const i=(py*S+px)*4;
+    if(a<thr){const f=1-a/thr;d[i]=L(45,195,f)|0;d[i+1]=L(30,158,f)|0;d[i+2]=L(4,30,f)|0;}
+    else{d[i]=z>0?5:12;d[i+1]=z>0?9:5;d[i+2]=z>0?20:4;}
+    d[i+3]=255;
+  }
+  ctx.putImageData(img,0,0);
+  if(dots){
+    ctx.fillStyle='#c9a84c';
+    const r=Math.max(2,S*.065);
+    if(dots&1){ctx.beginPath();ctx.arc(S/2,r+1,r,0,Math.PI*2);ctx.fill();}
+    if(dots&2){ctx.beginPath();ctx.arc(S/2,S-r-1,r,0,Math.PI*2);ctx.fill();}
+    if(dots&4){ctx.globalAlpha=.75;ctx.beginPath();ctx.arc(S*.7,S*.3,r*.75,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;}
+  }
+}
+
+// ════════════════════════════════════════════════
+// GLYPH PIPELINE
+// ════════════════════════════════════════════════
+const PSIZE=64;
+function getNodalBitmap(m,n,sym){
+  const bmp=new Uint8Array(PSIZE*PSIZE);
+  const zMax=getZMax(m,n,sym,20);
+  for(let py=0;py<PSIZE;py++)for(let px=0;px<PSIZE;px++){
+    const z=Z(px/PSIZE,py/PSIZE,m,n,sym);
+    bmp[py*PSIZE+px]=Math.abs(z)/zMax<.07?1:0;
+  }
+  return bmp;
+}
+function zhangSuen(src){
+  const img=new Uint8Array(src),W=PSIZE,H=PSIZE;
+  let changed=true;
+  while(changed){
+    changed=false;
+    for(let pass=0;pass<2;pass++){
+      const del=[];
+      for(let y=1;y<H-1;y++)for(let x=1;x<W-1;x++){
+        if(!img[y*W+x])continue;
+        const p2=img[(y-1)*W+x],p3=img[(y-1)*W+x+1],p4=img[y*W+x+1],p5=img[(y+1)*W+x+1];
+        const p6=img[(y+1)*W+x],p7=img[(y+1)*W+x-1],p8=img[y*W+x-1],p9=img[(y-1)*W+x-1];
+        const B=p2+p3+p4+p5+p6+p7+p8+p9;
+        if(B<2||B>6)continue;
+        const s=[p2,p3,p4,p5,p6,p7,p8,p9];
+        let A=0;for(let i=0;i<8;i++)if(!s[i]&&s[(i+1)%8])A++;
+        if(A!==1)continue;
+        if(pass===0){if(p2*p4*p6!==0)continue;if(p4*p6*p8!==0)continue;}
+        else{if(p2*p4*p8!==0)continue;if(p2*p6*p8!==0)continue;}
+        del.push(y*W+x);
+      }
+      if(del.length){del.forEach(i=>img[i]=0);changed=true;}
+    }
+  }
+  return img;
+}
+function countNeighbors(bmp,idx){
+  const W=PSIZE,x=idx%W,y=idx/W|0;
+  if(x<1||x>=W-1||y<1||y>=PSIZE-1)return 0;
+  const o=[-W-1,-W,-W+1,-1,1,W-1,W,W+1];
+  return o.reduce((s,d)=>s+(bmp[idx+d]||0),0);
+}
+function pruneBranches(src,minLen){
+  const img=new Uint8Array(src);
+  let changed=true;
+  while(changed){
+    changed=false;
+    for(let i=0;i<PSIZE*PSIZE;i++){
+      if(!img[i]||countNeighbors(img,i)!==1)continue;
+      let cur=i,prev=-1,len=0;
+      const branch=[cur];
+      while(true){
+        const x=cur%PSIZE,y=cur/PSIZE|0;
+        const o=[-PSIZE-1,-PSIZE,-PSIZE+1,-1,1,PSIZE-1,PSIZE,PSIZE+1];
+        let next=-1;
+        for(const d of o){const ni=cur+d;if(ni!==prev&&ni>=0&&ni<PSIZE*PSIZE&&img[ni]){next=ni;break;}}
+        if(next===-1||countNeighbors(img,next)>=3)break;
+        branch.push(next);len++;
+        if(len>minLen)break;
+        prev=cur;cur=next;
+      }
+      if(len<=minLen){branch.forEach(b=>img[b]=0);changed=true;}
+    }
+  }
+  return img;
+}
+function tracePaths(bmp){
+  const vis=new Uint8Array(PSIZE*PSIZE),paths=[];
+  function getStarts(){
+    const ep=[];
+    for(let i=0;i<PSIZE*PSIZE;i++)if(bmp[i]&&!vis[i]&&countNeighbors(bmp,i)===1)ep.push(i);
+    if(!ep.length)for(let i=0;i<PSIZE*PSIZE;i++)if(bmp[i]&&!vis[i]){ep.push(i);break;}
+    return ep;
+  }
+  let starts=getStarts();
+  while(starts.length){
+    const start=starts[0];if(vis[start]){starts=getStarts();continue;}
+    const path=[],o=[-PSIZE-1,-PSIZE,-PSIZE+1,-1,1,PSIZE-1,PSIZE,PSIZE+1];
+    let cur=start,prev=-1;
+    while(cur!==-1&&!vis[cur]){
+      path.push(cur);vis[cur]=1;
+      let next=-1;
+      for(const d of o){const ni=cur+d;if(ni!==prev&&ni>=0&&ni<PSIZE*PSIZE&&bmp[ni]&&!vis[ni]){next=ni;break;}}
+      prev=cur;cur=next;
+    }
+    if(path.length>2)paths.push(path.map(i=>({x:i%PSIZE,y:i/PSIZE|0})));
+    starts=getStarts();
+  }
+  return paths;
+}
+function chaikin(pts,iters){
+  let p=pts;
+  for(let it=0;it<iters;it++){
+    const n=[p[0]];
+    for(let i=0;i<p.length-1;i++){
+      n.push({x:.75*p[i].x+.25*p[i+1].x,y:.75*p[i].y+.25*p[i+1].y});
+      n.push({x:.25*p[i].x+.75*p[i+1].x,y:.25*p[i].y+.75*p[i+1].y});
+    }
+    n.push(p[p.length-1]);p=n;
+  }
+  return p;
+}
+function drawGlyph(canvas,paths,bg,stroke,lw){
+  const ctx=canvas.getContext('2d'),S=canvas.width,sc=S/PSIZE;
+  ctx.fillStyle=bg||'#07061a';ctx.fillRect(0,0,S,S);
+  ctx.strokeStyle=stroke||'#c9a84c';
+  ctx.lineWidth=lw||2.2;ctx.lineCap='round';ctx.lineJoin='round';
+  for(const path of paths){
+    if(path.length<2)continue;
+    const sm=chaikin(path,3);
+    ctx.beginPath();ctx.moveTo(sm[0].x*sc,sm[0].y*sc);
+    for(let i=1;i<sm.length;i++)ctx.lineTo(sm[i].x*sc,sm[i].y*sc);
+    ctx.stroke();
+  }
+}
+function drawBitmap(canvas,bmp,bg,fg){
+  const ctx=canvas.getContext('2d'),S=canvas.width,sc=S/PSIZE;
+  ctx.fillStyle=bg||'#07061a';ctx.fillRect(0,0,S,S);
+  ctx.fillStyle=fg||'#c9a84c';
+  for(let i=0;i<PSIZE*PSIZE;i++){
+    if(bmp[i])ctx.fillRect((i%PSIZE)*sc,(i/PSIZE|0)*sc,sc,sc);
+  }
+}
+function runPipeline(m,n,sym,canvases){
+  const raw=getNodalBitmap(m,n,sym);
+  drawBitmap(canvases[0],raw,'#07061a','#c9a84c');
+  const skel=zhangSuen(raw);
+  drawBitmap(canvases[1],skel,'#07061a','#40e8ff');
+  const pruned=pruneBranches(skel,4);
+  drawBitmap(canvases[2],pruned,'#07061a','#40ffa0');
+  const paths=tracePaths(pruned);
+  drawGlyph(canvases[3],paths,'#07061a','#c9a84c',2.2);
+}
+
+// ════════════════════════════════════════════════
+// ✦ PHONEME-ACCURATE AUDIO SYNTHESIS ✦
+// Web Audio API — Category-Specific Generation
+// Replaces original playFreq()/playTone()
+// ════════════════════════════════════════════════
+class PhonemeSynth {
+  constructor() {
+    this.ctx = null;
+    this.masterGain = null;
+    this._init();
+  }
+
+  _init() {
+    if (!this.ctx) {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      this.masterGain = this.ctx.createGain();
+      this.masterGain.gain.value = 0.25;
+      this.masterGain.connect(this.ctx.destination);
+    }
+  }
+
+  async resume() {
+    this._init();
+    if (this.ctx.state === 'suspended') await this.ctx.resume();
+    updateAudioStatus(true);
+  }
+
+  // ─── STOPS: /p b t d k ɡ/ ─────────
+  _createStop(voiceless, duration = 0.04) {
+    const bufferSize = this.ctx.sampleRate * duration;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3));
+    }
+    const src = this.ctx.createBufferSource();
+    src.buffer = buffer;
+    if (!voiceless) {
+      const lp = this.ctx.createBiquadFilter();
+      lp.type = 'lowpass';
+      lp.frequency.value = 800;
+      lp.Q.value = 0.7;
+      src.connect(lp);
+      lp.connect(this.masterGain);
+    } else {
+      src.connect(this.masterGain);
+    }
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(1, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+    src.connect(gain);
+    return { src, gain, duration };
+  }
+
+  // ─── FRICATIVES: /f v θ ð s z ʃ ʒ h/ ─────────
+  _createFricative(centerFreq, duration = 0.5) {
+    const bufferSize = this.ctx.sampleRate * duration;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+    const src = this.ctx.createBufferSource();
+    src.buffer = buffer;
+    const bp = this.ctx.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.value = centerFreq;
+    bp.Q.value = 1.2;
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.001, this.ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(1, this.ctx.currentTime + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+    src.connect(bp);
+    bp.connect(gain);
+    gain.connect(this.masterGain);
+    return { src, gain, duration };
+  }
+
+  // ─── VOWELS & SONORANTS ─────────
+  _createVowel(f1, f2, f0 = 120, duration = 0.8, boostNasal = false) {
+    const osc = this.ctx.createOscillator();
+    osc.type = 'triangle';
+    osc.frequency.value = f0;
+    const f1Filter = this.ctx.createBiquadFilter();
+    f1Filter.type = 'peaking';
+    f1Filter.frequency.value = f1;
+    f1Filter.Q.value = 2.5;
+    f1Filter.gain.value = 12;
+    const f2Filter = this.ctx.createBiquadFilter();
+    f2Filter.type = 'peaking';
+    f2Filter.frequency.value = f2;
+    f2Filter.Q.value = 2.5;
+    f2Filter.gain.value = 12;
+    let nasalBoost = null;
+    if (boostNasal) {
+      nasalBoost = this.ctx.createBiquadFilter();
+      nasalBoost.type = 'lowshelf';
+      nasalBoost.frequency.value = 325;
+      nasalBoost.gain.value = 8;
+    }
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.001, this.ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.3, this.ctx.currentTime + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+    osc.connect(f1Filter);
+    f1Filter.connect(f2Filter);
+    if (nasalBoost) {
+      f2Filter.connect(nasalBoost);
+      nasalBoost.connect(gain);
+    } else {
+      f2Filter.connect(gain);
+    }
+    gain.connect(this.masterGain);
+    return { osc, gain, duration };
+  }
+
+  // ─── AFFRICATES: /tʃ dʒ/ ─────────
+  _createAffricate(voiceless) {
+    const stop = this._createStop(voiceless, 0.025);
+    const fric = this._createFricative(voiceless ? 3500 : 3000, 0.15);
+    const now = this.ctx.currentTime;
+    stop.src.start(now);
+    stop.gain.gain.setValueAtTime(1, now);
+    fric.src.start(now + 0.025);
+    return { nodes: [stop.src, stop.gain, fric.src, fric.gain], duration: 0.2 };
+  }
+
+  // ─── MAIN DISPATCH ─────────
+  async play(p) {
+    await this.resume();
+    let synth;
+    switch(p.cat) {
+      case 'stop': {
+        const voiceless = p.manner.includes('voiceless');
+        synth = this._createStop(voiceless);
+        break;
+      }
+      case 'fric': {
+        const freqMap = {
+          's': 6000, 'z': 6000, 'ʃ': 3500, 'ʒ': 3500,
+          'f': 2500, 'v': 2500, 'θ': 3000, 'ð': 3000, 'h': 1800
+        };
+        const center = freqMap[p.ipa] || 3000;
+        synth = this._createFricative(center);
+        break;
+      }
+      case 'affr': {
+        const voiceless = p.manner.includes('voiceless');
+        synth = this._createAffricate(voiceless);
+        break;
+      }
+      case 'vowel':
+      case 'diphth': {
+        const formants = {
+          'iː': [300, 2300], 'ɪ': [400, 2000], 'eɪ': [450, 2100], 'ɛ': [550, 1900],
+          'æ': [700, 1500], 'ɑː': [800, 1100], 'ɔː': [600, 900], 'oʊ': [500, 1000],
+          'ʊ': [450, 1300], 'uː': [350, 900], 'ʌ': [700, 1400], 'ə': [500, 1500],
+          'ɚ': [500, 1500], 'aɪ': [800, 1800], 'aʊ': [700, 1200], 'ɔɪ': [600, 1400]
+        };
+        const [f1, f2] = formants[p.ipa] || [500, 1500];
+        const nasal = p.cat === 'nasal' || p.manner === 'nasal';
+        synth = this._createVowel(f1, f2, 120, 0.8, nasal);
+        break;
+      }
+      case 'nasal': {
+        const formantMap = { 'm': [300, 1200], 'n': [400, 2000], 'ŋ': [500, 1500] };
+        const [f1, f2] = formantMap[p.ipa] || [400, 1600];
+        synth = this._createVowel(f1, f2, 120, 0.8, true);
+        break;
+      }
+      case 'liquid':
+      case 'glide': {
+        const formantMap = { 'l': [400, 1400], 'r': [500, 1500], 'w': [350, 800], 'j': [300, 2200] };
+        const [f1, f2] = formantMap[p.ipa] || [450, 1500];
+        synth = this._createVowel(f1, f2, 120, 0.6, false);
+        break;
+      }
+      default: {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.frequency.value = 440;
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.001, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.2, this.ctx.currentTime + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.3);
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.3);
+        return;
+      }
+    }
+    if (synth.osc) synth.osc.start();
+    if (synth.src) synth.src.start();
+    const stopTime = this.ctx.currentTime + (synth.duration || 0.5);
+    if (synth.osc) synth.osc.stop(stopTime);
+    if (synth.src) synth.src.stop(stopTime);
+  }
+}
+
+// ─── FALLBACK: Pre-rendered WAV Library ─────────
+class FallbackPhonemePlayer {
+  constructor(baseUrl = 'https://cdn.jsdelivr.net/gh/panini-chladni/assets/phonemes/') {
+    this.baseUrl = baseUrl;
+    this.cache = {};
+  }
+  async play(p) {
+    const key = p.id || p.ipa.replace(/[^a-z0-9]/gi,'');
+    if (!this.cache[key]) {
+      try {
+        const url = `${this.baseUrl}${key}_accurate.wav`;
+        const resp = await fetch(url);
+        const arrayBuf = await resp.arrayBuffer();
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        this.cache[key] = await ctx.decodeAudioData(arrayBuf);
+      } catch(e) {
+        console.warn('Fallback WAV load failed:', key, e);
+        return;
+      }
+    }
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const src = ctx.createBufferSource();
+    src.buffer = this.cache[key];
+    src.connect(ctx.destination);
+    src.start();
+  }
+}
+
+// ─── GLOBAL INSTANCE + STATUS ─────────
+const phonemeSynth = new PhonemeSynth();
+const fallbackPlayer = new FallbackPhonemePlayer();
+let audioEnabled = false;
+
+function updateAudioStatus(ready) {
+  audioEnabled = ready;
+  const dot = document.getElementById('audioDot');
+  const txt = document.getElementById('audioText');
+  if (ready) {
+    dot.classList.remove('off');
+    txt.textContent = 'Phoneme audio ready';
+  } else {
+    dot.classList.add('off');
+    txt.textContent = 'Click to enable audio';
+  }
+}
+
+// ─── MAIN PLAY FUNCTION (replaces playFreq) ─────────
+async function playPhoneme(p) {
+  if (!p) return;
+  try {
+    await phonemeSynth.play(p);
+  } catch (e) {
+    console.warn('Synthesis failed, falling back to WAV:', e);
+    await fallbackPlayer.play(p);
+  }
+}
+
+// ─── UI INTEGRATION ─────────
+function bindPhonemeTriggers() {
+  // Explore tab phoneme buttons
+  document.querySelectorAll('.pb').forEach(btn => {
+    btn.onclick = function() {
+      const id = this.id.replace('pb-', '');
+      const p = byId[id];
+      if (p) {
+        selectPhoneme(p);
+        playPhoneme(p);
+      }
+    };
+  });
+  // Center panel play button
+  document.getElementById('btnPlay').onclick = () => {
+    if (sel) { playPhoneme(sel); flash('btnPlay'); }
+  };
+  // Mode Lab play button
+  window.mlPlayTone = () => {
+    const m = +document.getElementById('sl-m').value;
+    const n = +document.getElementById('sl-n').value;
+    const freq = parseFloat(document.getElementById('ml-hz').value) || mlFreq();
+    const p = { id:'CUST', ipa:'◌', cat:'stop', manner:'custom', freq:freq, m, n, sym:mlSym };
+    playPhoneme(p);
+    flash('btnPlay');
+  };
+  // Word encoder glyphs
+  document.addEventListener('click', (e) => {
+    const mg = e.target.closest('.mg');
+    if (mg) {
+      const ipa = mg.querySelector('.mga')?.textContent;
+      const p = P.find(x => x.ipa === ipa);
+      if (p) playPhoneme(p);
+    }
+  });
+  // Doc writer: play all
+  window.docPlayAll = async function() {
+    if (!docs[activeDoc]) return;
+    let i = 0;
+    for (const line of docs[activeDoc].lines) {
+      for (const cell of line) {
+        if (!cell.space && cell.phoneme) {
+          await new Promise(r => {
+            setTimeout(() => { playPhoneme(cell.phoneme); r(); }, i * 680);
+          });
+          i++;
+        }
+      }
+    }
+  };
+  // Global click to resume audio context
+  document.body.addEventListener('click', () => phonemeSynth.resume(), { once: true });
+}
+
+// ─── ORIGINAL FUNCTIONS (kept for compatibility) ─────────
+function playTone(){ if(!sel) return; playPhoneme(sel); flash('btnPlay'); }
+function flash(id){ const b=document.getElementById(id); if(!b)return; b.classList.add('on'); setTimeout(()=>b.classList.remove('on'),1100); }
+
+// ════════════════════════════════════════════════
+// EXPLORE STATE
+// ════════════════════════════════════════════════
+let sel=null,animFrame=null,isAnim=false,particles=[],symOvr=null;
+
+function selectPhoneme(p){
+  if(sel){const e=document.getElementById('pb-'+sel.id);if(e)e.classList.remove('on');}
+  sel=p;symOvr=null;
+  document.getElementById('btnFlip').classList.remove('on');
+  const e=document.getElementById('pb-'+p.id);if(e)e.classList.add('on');
+  if(isAnim)stopAnim();
+  drawChladni(document.getElementById('gc'),p.m,p.n,p.sym);
+  const cs=[
+    document.getElementById('pip-1'),document.getElementById('pip-2'),
+    document.getElementById('pip-3'),document.getElementById('pip-4')
+  ];
+  drawChladni(document.getElementById('pip-0'),p.m,p.n,p.sym);
+  runPipeline(p.m,p.n,p.sym,cs);
+  document.getElementById('gipa').textContent=p.ipa;
+  document.getElementById('gipa').style.color=CAT_COL[p.cat];
+  document.getElementById('gwrd').textContent=`"${p.word.replace(/·/g,'')}"  ·  ${p.id}  ·  ${CAT_LBL[p.cat]}`;
+  document.getElementById('gdets').innerHTML=`
+    <div class="db"><div class="dbl">Mode (m,n)</div><div class="dbv">(${p.m},${p.n})</div></div>
+    <div class="db"><div class="dbl">Symmetry</div><div class="dbv">${p.sym?'Sym':'Anti'}</div></div>
+    <div class="db"><div class="dbl">Frequency</div><div class="dbv">${p.freq?p.freq+'Hz':'burst'}</div></div>
+    <div class="db"><div class="dbl">Place</div><div class="dbv" style="font-size:9px">${p.place}</div></div>
+    <div class="db"><div class="dbl">Manner</div><div class="dbv" style="font-size:9px">${p.manner}</div></div>
+    <div class="db"><div class="dbl">Nodal lines</div><div class="dbv">${p.m+p.n-2}</div></div>
+  `;
+  document.getElementById('sb-mode').textContent=`(${p.m},${p.n})${p.sym?'S':'A'}`;
+  document.getElementById('sb-hz').textContent=p.freq?p.freq:'-';
+  document.getElementById('sb-place').textContent=p.place;
+  document.getElementById('sb-man').textContent=p.manner;
+  document.getElementById('sb-nd').textContent=p.m+p.n-2;
+  document.getElementById('sl-m').value=p.m;
+  document.getElementById('sl-n').value=p.n;
+  document.getElementById('v-m').textContent=p.m;
+  document.getElementById('v-n').textContent=p.n;
+  setSym(p.sym,true);mlUpdate();
+}
+function curSym(){return symOvr!==null?symOvr:(sel?sel.sym:1);}
+function flipSym(){
+  if(!sel)return;
+  symOvr=symOvr!==null?!symOvr:!sel.sym;
+  document.getElementById('btnFlip').classList.toggle('on');
+  if(isAnim)stopAnim();
+  drawChladni(document.getElementById('gc'),sel.m,sel.n,curSym());
+}
+function toggleAnim(){
+  if(!sel)return;
+  isAnim?stopAnim():startAnim(document.getElementById('gc'),sel.m,sel.n,curSym());
+  document.getElementById('btnAnim').classList.toggle('on',isAnim);
+}
+function startAnim(canvas,m,n,sym){
+  if(animFrame)cancelAnimationFrame(animFrame);
+  isAnim=true;
+  drawChladni(canvas,m,n,sym);
+  const ctx=canvas.getContext('2d'),bgImg=ctx.getImageData(0,0,canvas.width,canvas.height),S=canvas.width;
+  const zMax=getZMax(m,n,sym,14);
+  particles=[];let tries=0;
+  while(particles.length<220&&tries++<6000){
+    const x=Math.random(),y=Math.random();
+    if(Math.abs(Z(x,y,m,n,sym))/zMax>.14)
+      particles.push({x,y,vx:(Math.random()-.5)*.006,vy:(Math.random()-.5)*.006});
+  }
+  const eps=.002;let t=0;
+  function frame(){
+    if(!isAnim)return;t++;
+    ctx.putImageData(bgImg,0,0);
+    for(const p of particles){
+      const z=Z(p.x,p.y,m,n,sym)/zMax;
+      const dzx=(Z(p.x+eps,p.y,m,n,sym)-Z(p.x-eps,p.y,m,n,sym))/(2*eps);
+      const dzy=(Z(p.x,p.y+eps,m,n,sym)-Z(p.x,p.y-eps,m,n,sym))/(2*eps);
+      const k=Math.max(.02,.12-t*.0003);
+      p.vx=(p.vx-z*dzx*k)*.86+(Math.random()-.5)*.002;
+      p.vy=(p.vy-z*dzy*k)*.86+(Math.random()-.5)*.002;
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0){p.x=0;p.vx=Math.abs(p.vx)*.5}if(p.x>1){p.x=1;p.vx=-Math.abs(p.vx)*.5}
+      if(p.y<0){p.y=0;p.vy=Math.abs(p.vy)*.5}if(p.y>1){p.y=1;p.vy=-Math.abs(p.vy)*.5}
+    }
+    const al=Math.min(1,t/50)*.88;
+    ctx.fillStyle=`rgba(228,206,140,${al})`;
+    for(const p of particles)ctx.fillRect(p.x*S|0,p.y*S|0,2,2);
+    if(t<340)animFrame=requestAnimationFrame(frame);
+    else stopAnim(canvas,m,n,sym);
+  }
+  frame();
+}
+function stopAnim(canvas,m,n,sym){
+  isAnim=false;if(animFrame){cancelAnimationFrame(animFrame);animFrame=null;}
+  document.getElementById('btnAnim').classList.remove('on');
+  if(canvas&&m!=null)drawChladni(canvas,m,n,sym);
+}
+let seqArr=[];
+function addToSeq(){if(sel){seqArr.push(sel);renderSeqDisp();}}
+function renderSeqDisp(){
+  const el=document.getElementById('seqp');el.innerHTML='';
+  seqArr.forEach((p,i)=>{
+    const s=document.createElement('span');s.className='sphn';s.textContent=p.ipa;
+    s.style.color=CAT_COL[p.cat];
+    s.onclick=()=>{seqArr.splice(i,1);renderSeqDisp();};
+    el.appendChild(s);
+  });
+}
+function clearSeq(){seqArr=[];renderSeqDisp();}
+function renderSeq(list,label){
+  const plist=list||seqArr;if(!plist.length)return;
+  const sd=document.getElementById('sd');
+  if(sd.querySelector('.sph'))sd.innerHTML='';
+  const wd=document.createElement('div');wd.className='sword';
+  const lb=document.createElement('div');lb.className='slabel';
+  lb.textContent=label||('/'+plist.map(p=>p.ipa).join('')+'/');
+  wd.appendChild(lb);
+  const gd=document.createElement('div');gd.className='sglyphs';
+  plist.forEach(p=>{
+    const w=document.createElement('div');w.className='mg';
+    const c=document.createElement('canvas');c.width=44;c.height=44;w.appendChild(c);
+    const a=document.createElement('span');a.className='mga';a.textContent=p.ipa;w.appendChild(a);
+    w.title=`${p.id}: ${p.word.replace(/·/g,'')}`;
+    w.onclick=()=>selectPhoneme(p);gd.appendChild(w);
+    drawMini(c,p.m,p.n,p.sym,0);
+  });
+  wd.appendChild(gd);sd.appendChild(wd);sd.scrollTop=sd.scrollHeight;
+}
+async function phonemize(){
+  const text=document.getElementById('ti').value.trim();if(!text)return;
+  const sd=document.getElementById('sd');
+  sd.innerHTML='<div class="spin-wrap"><div class="spin"></div>Phonemizing via Claude…</div>';
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,
+        system:`GA English phonemizer. Return ONLY ARPAbet codes, one word per line, codes space-separated.
+Valid: AA AE AH AO AW AY B CH D DH EH ER EY F G H IH IY JH K L M N NG OW OY P R S SC SH T TH UH UW V W Y Z ZH
+SC=schwa. No stress. No extras.`,
+        messages:[{role:'user',content:text}]})});
+    const data=await res.json();
+    const raw=(data.content||[]).map(c=>c.text||'').join('').trim();
+    const lines=raw.split('\n').map(l=>l.trim()).filter(Boolean);
+    const words=text.trim().split(/\s+/);
+    sd.innerHTML='';
+    lines.forEach((line,idx)=>{
+      const plist=line.split(/\s+/).map(id=>byId[id.toUpperCase()]).filter(Boolean);
+      if(!plist.length)return;
+      renderSeq(plist,`${words[idx]||'?'}  →  /${plist.map(p=>p.ipa).join('')}/`);
+    });
+    if(!sd.children.length)sd.innerHTML='<div class="sph">Could not parse — try simpler words.</div>';
+  }catch(e){sd.innerHTML=`<div class="sph" style="color:#ff4040">Error: ${e.message}</div>`;}
+}
+
+// ════════════════════════════════════════════════
+// IPA QUADRILATERAL VOWEL CHART
+// ════════════════════════════════════════════════
+function drawIpaQuad(){
+  const canvas=document.getElementById('ipaQuad');
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height;
+  ctx.fillStyle='#07061a';ctx.fillRect(0,0,W,H);
+  const TL={x:.12,y:.06},TR={x:.88,y:.06};
+  const BL={x:.08,y:.88},BR={x:.92,y:.88};
+  ctx.strokeStyle='#1c1a42';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(TL.x*W,TL.y*H);ctx.lineTo(TR.x*W,TR.y*H);
+  ctx.lineTo(BR.x*W,BR.y*H);ctx.lineTo(BL.x*W,BL.y*H);ctx.closePath();ctx.stroke();
+  ctx.strokeStyle='#0f0e28';ctx.lineWidth=.5;
+  [[.33,.38],[.55,.58],[.78,.72]].forEach(([lx,rx])=>{
+    const ly=TL.y+(BL.y-TL.y)*lx,ry=TR.y+(BR.y-TR.y)*rx;
+    ctx.beginPath();ctx.moveTo(TL.x*W+(BL.x-TL.x)*W*lx,ly*H);
+    ctx.lineTo(TR.x*W+(BR.x-TR.x)*W*rx,ry*H);ctx.stroke();
+  });
+  ctx.fillStyle='#303060';ctx.font='7px JetBrains Mono,monospace';ctx.textAlign='left';
+  [['Close',.06],['Near-close',.34],['Open-mid',.56],['Open',.82]].forEach(([lbl,fy])=>{
+    ctx.fillText(lbl,1,fy*H+4);
+  });
+  ctx.textAlign='center';ctx.fillStyle='#202050';ctx.font='7.5px JetBrains Mono,monospace';
+  ['Front','Central','Back'].forEach((lbl,i)=>{
+    ctx.fillText(lbl,(TL.x+i*(TR.x-TL.x)/2)*W+10,(TL.y+.04)*H);
+  });
+  const vowels=P.filter(p=>p.qx!=null&&p.cat==='vowel');
+  vowels.forEach(p=>{
+    const qx=p.qx,qy=p.qy;
+    const lx=(TL.x+(BL.x-TL.x)*qy)*W,ly=(TL.y+(BL.y-TL.y)*qy)*H;
+    const rx=(TR.x+(BR.x-TR.x)*qy)*W,ry=(TR.y+(BR.y-TR.y)*qy)*H;
+    const px=lx+(rx-lx)*qx,py=ly+(ry-ly)*qx;
+    ctx.fillStyle=CAT_COL[p.cat]+'99';
+    ctx.beginPath();ctx.arc(px,py,3,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle=CAT_COL[p.cat];
+    ctx.font=`12px 'IM Fell English',Georgia,serif`;ctx.textAlign='center';
+    const ox=qx>.5?-8:8,oy=qy>.5?-5:10;
+    ctx.fillText(p.ipa,px+ox,py+oy);
+    p._qpx=px;p._qpy=py;
+  });
+  const dipths=P.filter(p=>p.qx!=null&&p.cat==='diphth');
+  dipths.forEach(p=>{
+    if(p.qx==null)return;
+    const qx=p.qx,qy=p.qy||.2;
+    const lx=(TL.x+(BL.x-TL.x)*qy)*W,ly=(TL.y+(BL.y-TL.y)*qy)*H;
+    const rx=(TR.x+(BR.x-TR.x)*qy)*W,ry=(TR.y+(BR.y-TR.y)*qy)*H;
+    const px=lx+(rx-lx)*qx,py=ly+(ry-ly)*qx;
+    ctx.fillStyle=CAT_COL['diphth']+'66';
+    ctx.beginPath();ctx.arc(px,py,2.5,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle=CAT_COL['diphth'];ctx.font=`11px 'IM Fell English',Georgia,serif`;
+    ctx.textAlign='center';ctx.fillText(p.ipa,px+8,py-4);
+    p._qpx=px;p._qpy=py;
+  });
+  canvas.onclick=function(e){
+    const rect=canvas.getBoundingClientRect(),mx=e.clientX-rect.left,my=e.clientY-rect.top;
+    const scx=W/rect.width,scy=H/rect.height;
+    let best=null,bestDist=999;
+    P.forEach(p=>{
+      if(p._qpx==null)return;
+      const d=Math.hypot(p._qpx-mx*scx,p._qpy-my*scy);
+      if(d<bestDist){bestDist=d;best=p;}
+    });
+    if(best&&bestDist<20)selectPhoneme(best);
+  };
+}
+
+// ════════════════════════════════════════════════
+// MODE LAB
+// ════════════════════════════════════════════════
+const MPROPS={al:{E:68.9e9,rho:2700,nu:.33},ss:{E:193e9,rho:8000,nu:.29},cu:{E:110e9,rho:8960,nu:.34}};
+let mlSym=1,mlTarget=null;
+function setSym(v,q){
+  mlSym=v?1:0;
+  document.getElementById('sym-s').classList.toggle('on',mlSym===1);
+  document.getElementById('sym-a').classList.toggle('on',mlSym===0);
+  if(!q)mlUpdate();
+}
+function mlFreq(){
+  const m=+document.getElementById('sl-m').value,n=+document.getElementById('sl-n').value;
+  const L=+document.getElementById('sl-L').value/1000,h=+document.getElementById('sl-h').value/10000;
+  const{E,rho,nu}=MPROPS[document.getElementById('ml-mat').value];
+  const D=E*Math.pow(h,3)/(12*(1-nu*nu));
+  return Math.round((Math.PI/(2*L*L))*(m*m+n*n)*Math.sqrt(D/(rho*h))*10)/10;
+}
+function mlUpdate(){
+  const m=+document.getElementById('sl-m').value,n=+document.getElementById('sl-n').value;
+  const L=+document.getElementById('sl-L').value,h=+document.getElementById('sl-h').value;
+  document.getElementById('v-m').textContent=m;document.getElementById('v-n').textContent=n;
+  document.getElementById('v-L').textContent=L;document.getElementById('v-h').textContent=(h/10).toFixed(1);
+  document.getElementById('v-nd').textContent=m+n-2;document.getElementById('eq-nc').textContent=m+n-2;
+  const ov=parseFloat(document.getElementById('ml-hz').value);
+  const disp=isNaN(ov)?mlFreq():ov;
+  document.getElementById('fd-hz').textContent=disp>9999?disp.toFixed(0):disp.toFixed(1);
+  document.getElementById('fd-mode').textContent=`(${m},${n}) ${mlSym?'S':'A'}`;
+  document.getElementById('fb-v').style.width=Math.min(100,(disp/1100)*100)+'%';
+  document.getElementById('fb-f').style.width=Math.min(100,(disp/3000)*100)+'%';
+  const Lm=L/1000,hm=h/10000;
+  const{E,rho,nu}=MPROPS[document.getElementById('ml-mat').value];
+  const D=E*Math.pow(hm,3)/(12*(1-nu*nu));
+  document.getElementById('eq-D').innerHTML=`
+    <div class="eqci"><div class="eqcl">E (GPa)</div><div class="eqcv">${(E/1e9).toFixed(1)}</div></div>
+    <div class="eqci"><div class="eqcl">ν</div><div class="eqcv">${nu}</div></div>
+    <div class="eqci"><div class="eqcl">h (mm)</div><div class="eqcv">${(hm*1e3).toFixed(2)}</div></div>
+    <div class="eqci"><div class="eqcl">D (N·m)</div><div class="eqcv">${D.toFixed(4)}</div></div>`;
+  const f=mlFreq();
+  document.getElementById('eq-f').innerHTML=`
+    <div class="eqci"><div class="eqcl">L (m)</div><div class="eqcv">${Lm.toFixed(3)}</div></div>
+    <div class="eqci"><div class="eqcl">m²+n²</div><div class="eqcv">${m*m+n*n}</div></div>
+    <div class="eqci"><div class="eqcl">ρ (kg/m³)</div><div class="eqcv">${rho}</div></div>
+    <div class="eqci"><div class="eqcl">f (Hz)</div><div class="eqcv">${f}</div></div>`;
+  document.getElementById('eq-p').innerHTML=`
+    <div class="eqci"><div class="eqcl">F₀ consnt</div><div class="eqcv">150 Hz</div></div>
+    <div class="eqci"><div class="eqcl">F₀ vowel</div><div class="eqcv">700 Hz</div></div>
+    <div class="eqci"><div class="eqcl">Δ_row</div><div class="eqcv">40 Hz</div></div>
+    <div class="eqci"><div class="eqcl">Δ_col</div><div class="eqcv">25 Hz</div></div>`;
+  drawChladni(document.getElementById('ml-gc'),m,n,mlSym);
+  document.getElementById('ml-id').innerHTML=`
+    <div class="db"><div class="dbl">Mode</div><div class="dbv">(${m},${n})</div></div>
+    <div class="db"><div class="dbl">Sym</div><div class="dbv">${mlSym?'S':'A'}</div></div>
+    <div class="db"><div class="dbl">Freq</div><div class="dbv">${disp}Hz</div></div>
+    <div class="db"><div class="dbl">Nodes</div><div class="dbv">${m+n-2}</div></div>`;
+  const skel=pruneBranches(zhangSuen(getNodalBitmap(m,n,mlSym)),4);
+  drawBitmap(document.getElementById('ml-pip-3'),skel,'#07061a','#40ffa0');
+  drawGlyph(document.getElementById('ml-pip-4'),tracePaths(skel),'#07061a','#c9a84c',2);
+}
+function mlAnim(){
+  const m=+document.getElementById('sl-m').value,n=+document.getElementById('sl-n').value;
+  startAnim(document.getElementById('ml-gc'),m,n,mlSym);
+}
+function buildAList(){
+  const el=document.getElementById('alist');el.innerHTML='';
+  P.forEach(p=>{
+    const d=document.createElement('div');d.className='ali';
+    d.innerHTML=`<span class="ali-ipa" style="color:${CAT_COL[p.cat]}">${p.ipa}</span>
+      <span class="ali-info">${p.id} · ${p.place}</span>
+      <span class="ali-mode">(${p.m},${p.n})</span>`;
+    d.onclick=()=>{el.querySelectorAll('.ali').forEach(x=>x.classList.remove('on'));d.classList.add('on');mlTarget=p;selectPhoneme(p);};
+    el.appendChild(d);
+  });
+}
+function assignMode(){
+  if(!mlTarget)return;
+  const m=+document.getElementById('sl-m').value,n=+document.getElementById('sl-n').value;
+  const ov=parseFloat(document.getElementById('ml-hz').value);
+  mlTarget.m=m;mlTarget.n=n;mlTarget.sym=mlSym;
+  if(!isNaN(ov))mlTarget.freq=ov;
+  selectPhoneme(mlTarget);
+  alert(`Assigned (${m},${n}) ${mlSym?'S':'A'} → /${mlTarget.ipa}/ (${mlTarget.id})`);
+}
+function buildMlGrid(){
+  const el=document.getElementById('ml-pgrid');
+  const rows=['Velar','Palatal','Retro','Dental','Labial'],cols=['vl.stp','vd.stp','vl.fr','vd.fr','nasal','other'];
+  let h='<table class="pftbl"><tr><th></th>';
+  cols.forEach(c=>h+=`<th>${c}</th>`);h+='</tr>';
+  rows.forEach((r,i)=>{
+    h+=`<tr><td style="color:var(--textd);text-align:right;padding-right:3px">${r}</td>`;
+    cols.forEach((c,j)=>{const f=150+i*40+j*25;h+=`<td onclick="document.getElementById('ml-hz').value=${f};mlUpdate()" title="${f}Hz">${f}</td>`;});
+    h+='</tr>';
+  });
+  el.innerHTML=h+'</table>';
+}
+function mlToDoc(){
+  const m=+document.getElementById('sl-m').value,n=+document.getElementById('sl-n').value;
+  const hz=parseFloat(document.getElementById('ml-hz').value)||mlFreq();
+  docInsert({id:'CUST',ipa:'◌',word:'custom',cat:'stop',place:'custom',manner:'custom',m,n,sym:mlSym,freq:hz});
+}
+
+// ════════════════════════════════════════════════
+// DOC WRITER
+// ════════════════════════════════════════════════
+let docs=[{name:'Document 1',lines:[[]]}],activeDoc=0,activeLine=0;
+let showIpa=true,dotMode=0,selCell=null,selData=null;
+function switchTab(name,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.tp').forEach(p=>{p.classList.remove('on');p.style.display='none';});
+  btn.classList.add('on');
+  const tp=document.getElementById('t-'+name);
+  tp.classList.add('on');tp.style.display='flex';
+  if(name==='mode'){mlUpdate();buildAList();buildMlGrid();}
+  if(name==='doc'){renderDocTabs();renderDocPage();}
+}
+function toggleIpa(){showIpa=!showIpa;document.getElementById('btn-ipa').classList.toggle('on',showIpa);renderDocPage();}
+function setDot(v){
+  dotMode=v;
+  [0,1,2,3,4].forEach(d=>document.getElementById('db-'+d)?.classList.toggle('on',d===v));
+}
+function addToDoc(){if(sel)docInsert(sel);}
+function docInsert(p){
+  docs[activeDoc].lines[activeLine].push({phoneme:p,dots:dotMode});
+  renderDocPage();docStats();
+}
+function docSpace(){docs[activeDoc].lines[activeLine].push({space:true});renderDocPage();}
+function docNewLine(){activeLine++;if(!docs[activeDoc].lines[activeLine])docs[activeDoc].lines[activeLine]=[];renderDocPage();}
+function docClear(){docs[activeDoc].lines=[[]];activeLine=0;selCell=null;selData=null;renderDocPage();docStats();}
+function docDel(){const l=docs[activeDoc].lines[activeLine];if(l&&l.length)l.pop();renderDocPage();docStats();}
+function renderDocTabs(){
+  const el=document.getElementById('docTabs');el.innerHTML='';
+  docs.forEach((d,i)=>{
+    const t=document.createElement('div');t.className='doc-tab'+(i===activeDoc?' on':'');
+    t.innerHTML=`<span onclick="swDoc(${i})" style="cursor:pointer">${d.name}</span>
+      <span class="dtclose" onclick="closeDoc(${i})">✕</span>`;
+    el.appendChild(t);
+  });
+  const a=document.createElement('button');a.className='dtadd';a.textContent='+ New';a.onclick=newDoc;el.appendChild(a);
+}
+function swDoc(i){activeDoc=i;activeLine=0;renderDocTabs();renderDocPage();docStats();}
+function newDoc(){docs.push({name:'Document '+(docs.length+1),lines:[[]]});activeDoc=docs.length-1;activeLine=0;renderDocTabs();renderDocPage();docStats();}
+function closeDoc(i){if(docs.length<=1)return;docs.splice(i,1);if(activeDoc>=docs.length)activeDoc=docs.length-1;renderDocTabs();renderDocPage();docStats();}
+function renderDocPage(){
+  renderDocTabs();
+  const page=document.getElementById('docLines'),empty=document.getElementById('emptyDoc');
+  const doc=docs[activeDoc];if(!doc)return;
+  const tot=doc.lines.reduce((s,l)=>s+l.filter(c=>!c.space).length,0);
+  if(empty)empty.style.display=tot===0?'block':'none';
+  page.innerHTML='';
+  doc.lines.forEach((line,li)=>{
+    const lineDiv=document.createElement('div');lineDiv.className='doc-line'+(li===activeLine?' al':'');
+    lineDiv.onclick=(e)=>{if(e.target===lineDiv){activeLine=li;renderDocPage();}};
+    line.forEach((cell,ci)=>{
+      if(cell.space){
+        const sp=document.createElement('div');sp.className='spcel';sp.textContent='·';
+        sp.onclick=(e)=>{e.stopPropagation();line.splice(ci,1);renderDocPage();docStats();};
+        lineDiv.appendChild(sp);return;
+      }
+      const p=cell.phoneme;
+      const gc=document.createElement('div');gc.className='gcel';
+      if(selData&&selData.cell===cell)gc.classList.add('sel');
+      const c=document.createElement('canvas');c.width=52;c.height=52;gc.appendChild(c);
+      if(showIpa){const il=document.createElement('div');il.className='gcel-ipa';il.textContent=p.ipa;gc.appendChild(il);}
+      gc.title=`${p.id}: ${p.word?p.word.replace(/·/g,''):''} — click to inspect`;
+      gc.onclick=(e)=>{
+        e.stopPropagation();activeLine=li;
+        document.querySelectorAll('.gcel').forEach(x=>x.classList.remove('sel'));
+        gc.classList.add('sel');selCell=gc;selData={cell,line,ci};
+        updateDotInspector(cell,p);
+      };
+      lineDiv.appendChild(gc);
+      const skel=pruneBranches(zhangSuen(getNodalBitmap(p.m,p.n,p.sym)),4);
+      const paths=tracePaths(skel);
+      drawGlyph(c,paths,'#07061a','#c9a84c',1.8);
+      if(cell.dots){
+        const ctx=c.getContext('2d'),S=c.width,r=Math.max(2,S*.06);
+        ctx.fillStyle='#c9a84c';
+        if(cell.dots&1){ctx.beginPath();ctx.arc(S/2,r+1,r,0,Math.PI*2);ctx.fill();}
+        if(cell.dots&2){ctx.beginPath();ctx.arc(S/2,S-r-1,r,0,Math.PI*2);ctx.fill();}
+        if(cell.dots&4){ctx.globalAlpha=.75;ctx.beginPath();ctx.arc(S*.72,S*.28,r*.75,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;}
+      }
+    });
+    if(li===activeLine){const cur=document.createElement('div');cur.className='cursor-blk';lineDiv.appendChild(cur);}
+    page.appendChild(lineDiv);
+  });
+}
+function updateDotInspector(cell,p){
+  const prev=document.getElementById('di-prev');prev.innerHTML='';
+  const c=document.createElement('canvas');c.width=68;c.height=68;
+  const skel=pruneBranches(zhangSuen(getNodalBitmap(p.m,p.n,p.sym)),4);
+  drawGlyph(c,tracePaths(skel),'#07061a','#c9a84c',2);
+  if(cell.dots){
+    const ctx=c.getContext('2d'),S=c.width,r=Math.max(2,S*.06);
+    ctx.fillStyle='#c9a84c';
+    if(cell.dots&1){ctx.beginPath();ctx.arc(S/2,r+1,r,0,Math.PI*2);ctx.fill();}
+    if(cell.dots&2){ctx.beginPath();ctx.arc(S/2,S-r-1,r,0,Math.PI*2);ctx.fill();}
+    if(cell.dots&4){ctx.globalAlpha=.75;ctx.beginPath();ctx.arc(S*.72,S*.28,r*.75,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;}
+  }
+  prev.appendChild(c);
+  [0,1,2,3,4].forEach(v=>{const e=document.getElementById('dopt-'+v);if(e)e.classList.toggle('on',cell.dots===v);});
+  document.getElementById('di-det').innerHTML=
+    `<b style="color:var(--textb)">${p.ipa}</b> — ${p.id}<br>
+    ${p.place} · ${p.manner}<br>
+    Mode (${p.m},${p.n}) ${p.sym?'Sym':'Anti'}<br>
+    ${p.freq?'Freq: '+p.freq+'Hz':'Transient burst'}<br>
+    Nodal lines: ${p.m+p.n-2}`;
+}
+function applyDot(v){
+  if(!selData)return;
+  selData.cell.dots=v;
+  [0,1,2,3,4].forEach(d=>{const e=document.getElementById('dopt-'+d);if(e)e.classList.toggle('on',d===v);});
+  renderDocPage();
+  if(selData)updateDotInspector(selData.cell,selData.cell.phoneme);
+}
+function docExport(){
+  if(!docs[activeDoc])return;
+  const doc=docs[activeDoc];
+  let txt=doc.name+'\n'+'─'.repeat(40)+'\n\n';
+  doc.lines.forEach(line=>{
+    let s='';
+    line.forEach(c=>{if(c.space)s+=' ';else{s+=c.phoneme.ipa;if(c.dots&1)s+='̇';if(c.dots&2)s+='̣';}});
+    txt+=s+'\n';
+  });
+  txt+='\nPhoneme Key:\n';
+  const seen=new Set();
+  doc.lines.forEach(l=>l.forEach(c=>{if(!c.space&&!seen.has(c.phoneme.id)){seen.add(c.phoneme.id);txt+=`${c.phoneme.ipa}=${c.phoneme.id}(${c.phoneme.word?.replace(/·/g,'')||''})\n`;}}));
+  const b=new Blob([txt],{type:'text/plain'});
+  const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=doc.name+'.txt';a.click();URL.revokeObjectURL(u);
+}
+function docStats(){
+  if(!docs[activeDoc])return;
+  let gl=0,sp=0;
+  docs[activeDoc].lines.forEach(l=>l.forEach(c=>c.space?sp++:gl++));
+  document.getElementById('dc-pg').textContent=activeDoc+1;
+  document.getElementById('dc-gl').textContent=gl;
+  document.getElementById('dc-wd').textContent=sp+docs[activeDoc].lines.length-1;
+}
+function filterPh(){
+  const q=document.getElementById('phSrch').value.toLowerCase();
+  document.querySelectorAll('.dpb').forEach(b=>{b.style.display=b.dataset.s.includes(q)?'':'none';});
+}
+
+// ════════════════════════════════════════════════
+// BUILD UI
+// ════════════════════════════════════════════════
+function buildPhGrid(){
+  const eg=document.getElementById('phonemeGrid'),dg=document.getElementById('docPhGrid');
+  const cats=['vowel','diphth','stop','fric','affr','nasal','liquid','glide'];
+  cats.forEach(cat=>{
+    const phones=P.filter(p=>p.cat===cat);if(!phones.length)return;
+    const sec=document.createElement('div');sec.className='psec';
+    const tit=document.createElement('div');tit.className='pstit';tit.textContent=CAT_LBL[cat];sec.appendChild(tit);
+    const g=document.createElement('div');g.className='pgrid';
+    phones.forEach(p=>{
+      const b=document.createElement('button');b.className=`pb ${CAT_CLS[p.cat]}`;b.id='pb-'+p.id;
+      b.title=`${p.ipa} — ${p.word.replace(/·/g,'')}\n${p.place} · ${p.manner}`;
+      b.innerHTML=`<span class="pi">${p.ipa}</span><span class="pe">${p.word.replace(/·/g,'').substr(0,4)}</span>`;
+      b.onclick=()=>selectPhoneme(p);g.appendChild(b);
+    });
+    sec.appendChild(g);eg.appendChild(sec);
+    const dsec=document.createElement('div');dsec.className='dph-sec';
+    const dtit=document.createElement('div');dtit.className='pstit';dtit.textContent=CAT_LBL[cat];dsec.appendChild(dtit);
+    const dgg=document.createElement('div');dgg.className='dpg';
+    phones.forEach(p=>{
+      const b=document.createElement('button');b.className=`dpb ${CAT_CLS[p.cat]}`;
+      b.dataset.s=`${p.id.toLowerCase()} ${p.ipa} ${p.word.replace(/·/g,'').toLowerCase()} ${p.place} ${p.manner}`;
+      b.title=`${p.ipa} — ${p.word.replace(/·/g,'')}`;
+      b.innerHTML=`<span class="dpi">${p.ipa}</span><span class="dpe">${p.id}</span>`;
+      b.onclick=()=>docInsert(p);dgg.appendChild(b);
+    });
+    dsec.appendChild(dgg);dg.appendChild(dsec);
+  });
+}
+function buildPanini(){
+  const tbl=document.getElementById('paniniTbl');
+  const heads=['','Bilab','Labdnt','Alveol','Post-alv','Velar'];
+  const rows=[
+    ['Stops—vl','P','','T','','K'],
+    ['Stops—vd','B','','D','','G'],
+    ['Fric—vl','','F','S TH','SH H',''],
+    ['Fric—vd','','V','Z DH','ZH',''],
+    ['Affric','','','','CH JH',''],
+    ['Nasals','M','','N','','NG'],
+    ['Lateral','','','L','',''],
+    ['Rhotic','','','R','',''],
+    ['Glides','W','','','Y',''],
+  ];
+  let h='<div class="pr">';
+  heads.forEach(hd=>h+=`<div class="pc pch">${hd}</div>`);h+='</div>';
+  rows.forEach(row=>{
+    h+='<div class="pr">';
+    row.forEach((cell,ci)=>{
+      if(ci===0){h+=`<div class="pc pcl">${cell}</div>`;return;}
+      const ids=cell.split(' ').filter(Boolean);
+      h+=`<div class="pc pcc" ${ids.length?`onclick="if(byId['${ids[0]}'])selectPhoneme(byId['${ids[0]}'])"`:''}>
+        ${ids.map(id=>byId[id]?`<span style="font-family:var(--serif)">${byId[id].ipa}</span>`:'').join(' ')}
+      </div>`;
+    });
+    h+='</div>';
+  });
+  tbl.innerHTML=h;
+}
+
+// ════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════
+buildPhGrid();
+buildPanini();
+buildAList();
+buildMlGrid();
+drawIpaQuad();
+renderDocTabs();
+renderDocPage();
+selectPhoneme(P[0]);
+setDot(0);
+bindPhonemeTriggers();
+updateAudioStatus(false);
+document.getElementById('t-explore').style.display='flex';
+</script>
+</body>
+</html>
