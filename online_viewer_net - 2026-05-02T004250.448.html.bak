@@ -260,7 +260,29 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;heigh
 .doc-footer span{color:var(--text)}
 
 /* Typing input overlay */
-.doc-typing-overlay{position:absolute;top:0;left:0;width:1px;height:1px;opacity:0.01;pointer-events:none;z-index:-1}
+.doc-typing-overlay{position:absolute;top:0;left:0;width:1px;height:1px;opacity:0.01;pointer-events:none;z-index:-1}</style>rder-color:var(--gold);color:var(--gold)}
+.doc-tabs{flex-shrink:0;display:flex;gap:2px;padding:4px 9px 0;border-bottom:1px solid var(--bdr);background:var(--bg);overflow-x:auto;min-height:26px}
+.doc-tab{background:var(--bg);border:1px solid var(--bdr);border-bottom:none;color:var(--textd);padding:3px 9px;border-radius:3px 3px 0 0;cursor:pointer;font-size:9px;font-family:var(--mono);white-space:nowrap;display:flex;align-items:center;gap:5px;transition:all .12s}
+.doc-tab.on{background:var(--bg1);border-color:var(--bdr2);color:var(--gold)}
+.dtclose{color:var(--textd);font-size:8px;line-height:1;padding:0 2px}
+.dtclose:hover{color:var(--rose)}
+.dtadd{background:transparent;border:1px dashed var(--bdr);color:var(--textd);padding:3px 8px;border-radius:3px 3px 0 0;cursor:pointer;font-size:9px;font-family:var(--mono);transition:all .12s}
+.dtadd:hover{border-color:var(--gold);color:var(--gold)}
+.doc-page{flex:1;overflow-y:auto;padding:20px 24px;background:var(--bg2)}
+.doc-line{display:flex;flex-wrap:wrap;gap:1px;align-items:flex-end;min-height:72px;padding:4px;border-radius:3px;cursor:default;position:relative;margin-bottom:6px}
+.doc-line.al{background:#0a0920}
+.gcel{position:relative;cursor:pointer;border-radius:3px;border:1px solid transparent;transition:all .12s;display:inline-flex;flex-direction:column;align-items:center;flex-shrink:0}
+.gcel:hover{border-color:var(--purple)}
+.gcel.sel{border-color:var(--gold);background:var(--golddim)}
+.gcel canvas{display:block;border-radius:2px}
+.gcel .gcel-ipa{font-family:var(--serif);font-size:8px;color:var(--textd);text-align:center;line-height:1.1;margin-top:1px}
+.spcel{width:12px;height:66px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--bdr2);font-size:9px;border:1px dashed transparent;border-radius:2px;transition:all .12s;flex-shrink:0}
+.spcel:hover{border-color:var(--bdr);color:var(--textd)}
+.cursor-blk{display:inline-block;width:2px;height:48px;background:var(--gold);animation:blink 1s step-end infinite;border-radius:1px;vertical-align:bottom;margin:0 2px;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.empty-doc{text-align:center;color:var(--textd);margin-top:50px;font-family:var(--body);font-style:italic;font-size:13px;line-height:2}
+.doc-footer{flex-shrink:0;padding:3px 10px;border-top:1px solid var(--bdr);font-size:8.5px;color:var(--textd);background:var(--bg);display:flex;gap:14px}
+.doc-footer span{color:var(--text)}
 
 /* Dot inspector */
 .di-wrap{flex:1;overflow-y:auto;padding:10px}
@@ -578,13 +600,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;heigh
     </div>
     <div class="doc-tabs" id="docTabs"></div>
     <div class="doc-page" id="docPage">
-      <input type="text" class="doc-typing-overlay" id="docTypingInput" autocomplete="off" spellcheck="false">
-      <div class="doc-lines-container">
-        <div id="emptyDoc" class="empty-doc">Click phonemes on the left to begin writing.<br>
-          Each glyph is the physical vibration pattern of its sound.<br>
-          <span style="font-size:10px;color:var(--bdr2)">← Select a phoneme to start</span></div>
-        <div id="docLines"></div>
-      </div>
+      <div id="emptyDoc" class="empty-doc">Click phonemes on the left to begin writing.<br>
+        Each glyph is the physical vibration pattern of its sound.<br>
+        <span style="font-size:10px;color:var(--bdr2)">← Select a phoneme to start</span></div>
+      <div id="docLines"></div>
     </div>
     <div class="doc-footer">
       <div>Doc <span id="dc-pg">1</span></div>
@@ -1202,116 +1221,8 @@ function bindPhonemeTriggers() {
       }
     }
   };
-  
-  // ════════════════════════════════════════════════
-  // DOC TYPING SYSTEM - Type with Chladni glyphs
-  // ════════════════════════════════════════════════
-  const typingInput = document.getElementById('docTypingInput');
-  let typingEnabled = false;
-  
-  // Toggle typing mode when clicking on doc page
-  document.getElementById('docPage').addEventListener('click', function(e) {
-    if (e.target.id === 'docPage' || e.target.classList.contains('doc-lines-container') || e.target.id === 'docLines') {
-      enableTypingMode();
-    }
-  });
-  
-  function enableTypingMode() {
-    typingEnabled = true;
-    typingInput.focus();
-    document.getElementById('docPage').style.cursor = 'text';
-  }
-  
-  function disableTypingMode() {
-    typingEnabled = false;
-    typingInput.blur();
-    document.getElementById('docPage').style.cursor = 'default';
-  }
-  
-  // Handle keyboard input for typing
-  typingInput.addEventListener('keydown', function(e) {
-    if (!typingEnabled) return;
-    
-    // Handle special keys
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      docNewLine();
-      return;
-    }
-    if (e.key === 'Backspace') {
-      e.preventDefault();
-      docDel();
-      renderDocPage();
-      return;
-    }
-    if (e.key === ' ') {
-      e.preventDefault();
-      docSpace();
-      renderDocPage();
-      return;
-    }
-    if (e.key === 'Escape') {
-      e.preventDefault();
-      disableTypingMode();
-      return;
-    }
-    
-    // Handle regular character input
-    if (e.key.length === 1 && /[a-zA-Z]/.test(e.key)) {
-      e.preventDefault();
-      typeCharacter(e.key.toLowerCase());
-    }
-  });
-  
-  // Keep focus on typing input when in typing mode
-  typingInput.addEventListener('blur', function() {
-    if (typingEnabled) {
-      setTimeout(() => { if(typingEnabled) typingInput.focus(); }, 50);
-    }
-  });
-  
-  // Text to phoneme mapping for American English (GA)
-  const charToPhonemes = {
-    'a': ['AE'], 'b': ['B'], 'c': ['K'], 'd': ['D'], 'e': ['EH'], 'f': ['F'],
-    'g': ['G'], 'h': ['H'], 'i': ['IH'], 'j': ['JH'], 'k': ['K'], 'l': ['L'],
-    'm': ['M'], 'n': ['N'], 'o': ['OW'], 'p': ['P'], 'q': ['K'], 'r': ['R'],
-    's': ['S'], 't': ['T'], 'u': ['AH'], 'v': ['V'], 'w': ['W'], 'x': ['K','S'],
-    'y': ['Y'], 'z': ['Z']
-  };
-  
-  function typeCharacter(char) {
-    const phonemeIds = charToPhonemes[char] || ['SC'];
-    phonemeIds.forEach(id => {
-      const p = byId[id];
-      if (p) {
-        docInsert(p);
-        // Optionally play the sound as you type
-        // playPhoneme(p);
-      }
-    });
-    renderDocPage();
-    docStats();
-  }
-  
-  // Add typing toggle button to toolbar
-  const tb = document.querySelector('.doc-tb');
-  if (tb) {
-    const typeBtn = document.createElement('button');
-    typeBtn.className = 'dtb';
-    typeBtn.id = 'btn-type-mode';
-    typeBtn.textContent = '⌨ Type';
-    typeBtn.title = 'Toggle typing mode - click document then type';
-    typeBtn.onclick = function() {
-      if (typingEnabled) {
-        disableTypingMode();
-        this.classList.remove('on');
-      } else {
-        enableTypingMode();
-        this.classList.add('on');
-      }
-    };
-    tb.insertBefore(typeBtn, tb.firstChild);
-  }
+  // Global click to resume audio context
+  document.body.addEventListener('click', () => phonemeSynth.resume(), { once: true });
 }
 
 // ─── ORIGINAL FUNCTIONS (kept for compatibility) ─────────
@@ -1850,9 +1761,6 @@ renderDocPage();
 selectPhoneme(P[0]);
 setDot(0);
 bindPhonemeTriggers();
-
-// Initialize typing system after bindPhonemeTriggers
-document.body.addEventListener("click", () => { if(window.phonemeSynth) phonemeSynth.resume(); }, { once: true });
 updateAudioStatus(false);
 document.getElementById('t-explore').style.display='flex';
 </script>
